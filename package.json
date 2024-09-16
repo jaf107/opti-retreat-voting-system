@@ -1,0 +1,12 @@
+{
+  "name": "voting-monorepo",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "build": "pnpm run -r build",
+    "dev:voting": "pnpm --filter voting-app start",
+    "dev:admin": "pnpm --filter voting-app-admin start",
+    "dev": "pnpm run --parallel dev:voting dev:admin",
+    "start": "pnpm -r run start"
+  }
+}

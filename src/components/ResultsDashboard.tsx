@@ -1,20 +1,14 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { PieChart, Pie, Cell, Tooltip, Legend, Label } from "recharts";
 import { fetchResults, fetchCategories } from "../utils/supabaseApi";
 import {
   Box,
-  Button,
-  VStack,
   Heading,
-  Text,
-  Progress,
   Spinner,
-  Accordion,
-  AccordionItem,
-  AccordionButton,
-  AccordionPanel,
-  AccordionIcon,
-  HStack,
-  Switch,
+  Text,
+  Grid,
+  GridItem,
+  useColorModeValue,
 } from "@chakra-ui/react";
 
 type Option = {
@@ -29,30 +23,47 @@ type CategoryResult = {
   options: Option[];
 };
 
-const ResultsDashboard: React.FC = () => {
+const COLORS = [
+  "#3182CE",
+  "#38A169",
+  "#DD6B20",
+  "#D53F8C",
+  "#805AD5",
+  "#319795",
+  "#ED8936",
+  "#4299E1",
+  "#48BB78",
+  "#F56565",
+];
+
+const VotingResultsPieCharts: React.FC = () => {
   const [results, setResults] = useState<CategoryResult[]>([]);
   const [loading, setLoading] = useState(false);
-  const [expandedIndexes, setExpandedIndexes] = useState<number[]>([]);
-  const [showPercentage, setShowPercentage] = useState(true);
 
-  const handleFetchResults = async () => {
-    setLoading(true);
-    const { data: categoriesData, error: categoriesError } =
-      await fetchCategories();
-    const { data: resultsData, error: resultsError } = await fetchResults();
+  const bgColor = useColorModeValue("gray.50", "gray.800");
+  const textColor = useColorModeValue("gray.800", "white");
 
-    if (categoriesError || resultsError) {
-      console.error("Error fetching data:", categoriesError || resultsError);
-      setResults([]);
-    } else {
-      const processedResults = processResultsByCategory(
-        categoriesData || [],
-        resultsData || []
-      );
-      setResults(processedResults);
-    }
-    setLoading(false);
-  };
+  useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true);
+      const { data: categoriesData, error: categoriesError } =
+        await fetchCategories();
+      const { data: resultsData, error: resultsError } = await fetchResults();
+
+      if (categoriesError || resultsError) {
+        console.error("Error fetching data:", categoriesError || resultsError);
+        setResults([]);
+      } else {
+        const processedResults = processResultsByCategory(
+          categoriesData || [],
+          resultsData || []
+        );
+        setResults(processedResults);
+      }
+      setLoading(false);
+    };
+    fetchData();
+  }, []);
 
   const processResultsByCategory = (
     categories: any[],
@@ -96,99 +107,110 @@ const ResultsDashboard: React.FC = () => {
     return processedResults;
   };
 
-  /* useEffect(() => {
-    handleFetchResults();
-  }, []); */
+  const CustomLabel = ({
+    cx,
+    cy,
+    midAngle,
+    innerRadius,
+    outerRadius,
+    percent,
+    index,
+    name,
+    value,
+  }: any) => {
+    const RADIAN = Math.PI / 180;
+    const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
+    const x = cx + radius * Math.cos(-midAngle * RADIAN);
+    const y = cy + radius * Math.sin(-midAngle * RADIAN);
 
-  const handleExpandAll = () => {
-    setExpandedIndexes(results.map((_, index) => index));
-  };
-
-  const handleCollapseAll = () => {
-    setExpandedIndexes([]);
-  };
-
-  const toggleDisplayMode = () => {
-    setShowPercentage(!showPercentage);
+    return (
+      <text
+        x={x}
+        y={y}
+        fill="white"
+        textAnchor={x > cx ? "start" : "end"}
+        dominantBaseline="central"
+        fontSize={percent > 0.15 ? "14px" : "12px"}
+        fontWeight={index === 0 ? "bold" : "normal"}
+      >
+        {`${name} (${(percent * 100).toFixed(0)}%)`}
+      </text>
+    );
   };
 
   return (
-    <Box>
-      <Heading as="h2" size="lg" mb={4}>
+    <Box p={8} bg={bgColor} borderRadius="lg" boxShadow="xl">
+      <Heading as="h2" size="xl" mb={6} textAlign="center" color={textColor}>
         Voting Results
       </Heading>
-      <HStack spacing={4} mb={4}>
-        <Button onClick={handleFetchResults} disabled={loading}>
-          {loading ? "Loading..." : "Refresh Results"}
-        </Button>
-        <Button onClick={handleExpandAll}>Expand All</Button>
-        <Button onClick={handleCollapseAll}>Collapse All</Button>
-        <HStack>
-          <Text>Votes</Text>
-          <Switch isChecked={showPercentage} onChange={toggleDisplayMode} />
-          <Text>Percentage</Text>
-        </HStack>
-      </HStack>
       {loading ? (
-        <Spinner />
+        <Spinner
+          size="xl"
+          thickness="4px"
+          speed="0.65s"
+          emptyColor="gray.200"
+          color="blue.500"
+        />
       ) : results.length > 0 ? (
-        <Accordion
-          allowMultiple
-          index={expandedIndexes}
-          onChange={(indexes: number[]) => setExpandedIndexes(indexes)}
-        >
+        <Grid templateColumns={["1fr", "1fr", "repeat(2, 1fr)"]} gap={8}>
           {results.map((categoryResult, index) => (
-            <AccordionItem key={categoryResult.category_id}>
-              <h2>
-                <AccordionButton>
-                  <Box flex="1" textAlign="left">
-                    {categoryResult.category_name}
-                  </Box>
-                  <AccordionIcon />
-                </AccordionButton>
-              </h2>
-              <AccordionPanel pb={4}>
-                <VStack spacing={4} align="stretch">
-                  {categoryResult.options.map((option) => (
-                    <Box
-                      key={option.option_name}
-                      borderWidth="1px"
-                      borderRadius="lg"
-                      p={4}
+            <GridItem key={categoryResult.category_id}>
+              <Box
+                mb={4}
+                bg={useColorModeValue("white", "gray.700")}
+                p={6}
+                borderRadius="md"
+                boxShadow="md"
+              >
+                <Heading
+                  as="h3"
+                  size="lg"
+                  mb={4}
+                  textAlign="center"
+                  color={textColor}
+                >
+                  {categoryResult.category_name}
+                </Heading>
+                {categoryResult.options.length > 0 ? (
+                  <PieChart width={400} height={400}>
+                    <Pie
+                      data={categoryResult.options}
+                      dataKey="percentage"
+                      nameKey="option_name"
+                      cx="50%"
+                      cy="50%"
+                      outerRadius={160}
+                      labelLine={false}
+                      label={CustomLabel}
                     >
-                      <Text fontWeight="bold" mb={2}>
-                        {option.option_name}
-                      </Text>
-                      <Text mb={2}>
-                        {showPercentage
-                          ? `${option.percentage.toFixed(1)}%`
-                          : `${option.votes} votes`}
-                      </Text>
-                      <Progress
-                        value={
-                          showPercentage
-                            ? option.percentage
-                            : (option.votes /
-                                Math.max(
-                                  ...categoryResult.options.map((o) => o.votes)
-                                )) *
-                              100
-                        }
-                        size="sm"
-                        colorScheme="blue"
-                      />
-                    </Box>
-                  ))}
-                </VStack>
-              </AccordionPanel>
-            </AccordionItem>
+                      {categoryResult.options.map((entry, index) => (
+                        <Cell
+                          key={`cell-${index}`}
+                          fill={COLORS[index % COLORS.length]}
+                          stroke={useColorModeValue("white", "gray.800")}
+                          strokeWidth={2}
+                        />
+                      ))}
+                    </Pie>
+                    <Tooltip />
+                    <Legend verticalAlign="bottom" height={36} />
+                  </PieChart>
+                ) : (
+                  <Text fontSize="lg" textAlign="center" color={textColor}>
+                    No options available for this category.
+                  </Text>
+                )}
+              </Box>
+            </GridItem>
           ))}
-        </Accordion>
+        </Grid>
       ) : (
-        <Text>No results found.</Text>
+        <Text fontSize="xl" textAlign="center" color={textColor}>
+          No results found.
+        </Text>
       )}
     </Box>
   );
 };
 
-export default ResultsDashboard;
+export default VotingResultsPieCharts;

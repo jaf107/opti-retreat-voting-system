@@ -18,11 +18,11 @@ import {
   Image,
   SimpleGrid,
   useToast,
+  Text,
   VStack,
   chakra,
-  Text,
 } from "@chakra-ui/react";
-import { motion, isValidMotionProp, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, isValidMotionProp } from "framer-motion";
 import { useSwipeable } from "react-swipeable";
 import { ChevronLeftIcon, ChevronRightIcon } from "@chakra-ui/icons";
 
@@ -46,6 +46,7 @@ const VotingFlow: React.FC = () => {
   const [category, setCategory] = useState<Category | null>(null);
   const [options, setOptions] = useState<Option[]>([]);
   const [selectedOptionId, setSelectedOptionId] = useState<string | null>(null);
+  const [votedOptionId, setVotedOptionId] = useState<string | null>(null);
   const [nextCategoryId, setNextCategoryId] = useState<string | null>(null);
   const [previousCategoryId, setPreviousCategoryId] = useState<string | null>(
     null
@@ -110,43 +111,19 @@ const VotingFlow: React.FC = () => {
     if (!error && data?.length !== undefined && data.length > 0) {
       setHasVoted(true);
       setSelectedOptionId(data[0].option_id);
+      setVotedOptionId(data[0].option_id);
     } else {
       setHasVoted(false);
       setSelectedOptionId(null);
+      setVotedOptionId(null);
     }
   };
 
-  const handleSelectOption = async (optionId: string) => {
-    if (hasVoted && selectedOptionId !== optionId) {
-      // Update the vote
-      const { error } = await updateVote(
-        sessionId || "",
-        categoryId || "",
-        optionId
-      );
-      if (error) {
-        toast({
-          title: "Error updating vote",
-          description: error.message,
-          status: "error",
-          duration: 3000,
-          isClosable: true,
-        });
-      } else {
-        setSelectedOptionId(optionId);
-        toast({
-          title: "Vote updated successfully",
-          status: "success",
-          duration: 3000,
-          isClosable: true,
-        });
-      }
-    } else if (!hasVoted) {
-      setSelectedOptionId(optionId);
-    }
+  const handleSelectOption = (optionId: string) => {
+    setSelectedOptionId(optionId);
   };
 
-  const handleVote = async () => {
+  const handleSubmit = async () => {
     if (!selectedOptionId) {
       toast({
         title: "Please select an option",
@@ -157,22 +134,40 @@ const VotingFlow: React.FC = () => {
       return;
     }
 
-    const { error } = await submitVote(
-      sessionId || "",
-      categoryId || "",
-      selectedOptionId
-    );
+    let error;
+    if (hasVoted) {
+      if (selectedOptionId !== votedOptionId) {
+        ({ error } = await updateVote(
+          sessionId || "",
+          categoryId || "",
+          selectedOptionId
+        ));
+      } else {
+        // No change in vote, no need to update
+        return;
+      }
+    } else {
+      ({ error } = await submitVote(
+        sessionId || "",
+        categoryId || "",
+        selectedOptionId
+      ));
+    }
+
     if (!error) {
       toast({
-        title: "Vote submitted successfully",
+        title: hasVoted
+          ? "Vote updated successfully"
+          : "Vote submitted successfully",
         status: "success",
         duration: 3000,
         isClosable: true,
       });
       setHasVoted(true);
+      setVotedOptionId(selectedOptionId);
     } else {
       toast({
-        title: "Error submitting vote",
+        title: hasVoted ? "Error updating vote" : "Error submitting vote",
         description: error.message,
         status: "error",
         duration: 3000,
@@ -241,66 +236,63 @@ const VotingFlow: React.FC = () => {
               initial={{ opacity: 0, y: 50 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -50 }}
-              borderWidth="1px"
-              borderRadius="lg"
-              overflow="hidden"
-              cursor="pointer"
-              onClick={() => handleSelectOption(option.id)}
-              bg={selectedOptionId === option.id ? "blue.100" : "white"}
-              boxShadow={
-                selectedOptionId === option.id
-                  ? "0 0 0 3px rgba(66, 153, 225, 0.6)"
-                  : "none"
-              }
             >
-              <Box position="relative" pb="100%">
-                <Image
-                  src={option.image_url}
-                  alt={option.name}
-                  objectFit="cover"
-                  position="absolute"
-                  top="0"
-                  left="0"
-                  width="100%"
-                  height="100%"
-                />
-              </Box>
-              <Box p={4}>
-                <Heading as="h3" size="md" mb={2}>
-                  {option.name}
-                </Heading>
-                <Button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleSelectOption(option.id);
-                  }}
-                  colorScheme={selectedOptionId === option.id ? "blue" : "gray"}
-                  width="100%"
-                >
-                  {hasVoted && selectedOptionId === option.id
-                    ? "Selected"
-                    : "Select"}
-                </Button>
+              <Box
+                borderWidth="1px"
+                borderRadius="lg"
+                overflow="hidden"
+                cursor="pointer"
+                onClick={() => handleSelectOption(option.id)}
+                bg={selectedOptionId === option.id ? "blue.100" : "white"}
+                boxShadow={
+                  selectedOptionId === option.id
+                    ? "0 0 0 3px rgba(66, 153, 225, 0.6)"
+                    : "none"
+                }
+              >
+                <Box position="relative" pb="100%">
+                  <Image
+                    src={option.image_url}
+                    alt={option.name}
+                    objectFit="cover"
+                    position="absolute"
+                    top="0"
+                    left="0"
+                    width="100%"
+                    height="100%"
+                  />
+                </Box>
+                <VStack p={4} align="start">
+                  <Heading as="h3" size="md">
+                    {option.name}
+                  </Heading>
+                  <Text
+                    fontWeight="bold"
+                    color={
+                      selectedOptionId === option.id ? "blue.500" : "gray.500"
+                    }
+                  >
+                    {selectedOptionId === option.id
+                      ? "Selected"
+                      : "Click to select"}
+                  </Text>
+                </VStack>
               </Box>
             </MotionBox>
           ))}
         </SimpleGrid>
       </AnimatePresence>
       <Flex justifyContent="center" mt={4}>
-        {!hasVoted && (
-          <Button
-            onClick={handleVote}
-            colorScheme="green"
-            disabled={!selectedOptionId}
-          >
-            Vote
-          </Button>
-        )}
-        {hasVoted && (
-          <Text fontSize="lg" fontWeight="bold" color="green.500">
-            Vote submitted!
-          </Text>
-        )}
+        <Button
+          onClick={handleSubmit}
+          colorScheme="green"
+          disabled={
+            !selectedOptionId ||
+            (hasVoted && selectedOptionId === votedOptionId)
+          }
+        >
+          {hasVoted ? "Update Vote" : "Submit Vote"}
+        </Button>
       </Flex>
     </Box>
   );

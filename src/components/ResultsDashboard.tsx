@@ -107,37 +107,6 @@ const VotingResultsPieCharts: React.FC = () => {
     return processedResults;
   };
 
-  const CustomLabel = ({
-    cx,
-    cy,
-    midAngle,
-    innerRadius,
-    outerRadius,
-    percent,
-    index,
-    name,
-    value,
-  }: any) => {
-    const RADIAN = Math.PI / 180;
-    const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
-    const x = cx + radius * Math.cos(-midAngle * RADIAN);
-    const y = cy + radius * Math.sin(-midAngle * RADIAN);
-
-    return (
-      <text
-        x={x}
-        y={y}
-        fill="white"
-        textAnchor={x > cx ? "start" : "end"}
-        dominantBaseline="central"
-        fontSize={percent > 0.15 ? "14px" : "12px"}
-        fontWeight={index === 0 ? "bold" : "normal"}
-      >
-        {`${name} (${(percent * 100).toFixed(0)}%)`}
-      </text>
-    );
-  };
-
   return (
     <Box p={8} bg={bgColor} borderRadius="lg" boxShadow="xl">
       <Heading as="h2" size="xl" mb={6} textAlign="center" color={textColor}>
@@ -180,8 +149,8 @@ const VotingResultsPieCharts: React.FC = () => {
                       cx="50%"
                       cy="50%"
                       outerRadius={160}
-                      labelLine={false}
-                      label={CustomLabel}
+                      labelLine={true}
+                      // label={CustomLabel}
                     >
                       {categoryResult.options.map((entry, index) => (
                         <Cell
@@ -193,7 +162,7 @@ const VotingResultsPieCharts: React.FC = () => {
                       ))}
                     </Pie>
                     <Tooltip />
-                    <Legend verticalAlign="bottom" height={36} />
+                    <Legend verticalAlign="top" height={36} />
                   </PieChart>
                 ) : (
                   <Text fontSize="lg" textAlign="center" color={textColor}>

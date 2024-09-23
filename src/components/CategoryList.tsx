@@ -74,8 +74,8 @@ const CategoryList: React.FC = () => {
 
   return (
     <Box>
-      <Heading as="h1" size="xl" mb={6}>
-        Bingo Categories
+      <Heading as="h1" size="xl" mb={6} textAlign={"center"}>
+        UnOptimized Awards Ceremony
       </Heading>
       <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} spacing={4}>
         {categories.map((category) => (

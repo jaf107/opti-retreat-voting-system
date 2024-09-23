@@ -1,16 +1,5 @@
-import React, { useEffect, useState } from "react";
 import { BrowserRouter as Router, Route, Routes, Link } from "react-router-dom";
-import {
-  ChakraProvider,
-  Box,
-  Flex,
-  Button,
-  VStack,
-  Card,
-  CardHeader,
-  CardBody,
-  Text,
-} from "@chakra-ui/react";
+import { ChakraProvider, Box, Flex, Button, VStack } from "@chakra-ui/react";
 import { SessionProvider } from "./contexts/SessionContext";
 import useSession from "./hooks/useSession";
 
@@ -20,50 +9,9 @@ import VotingFlow from "./components/VotingFlow";
 import ResultsDashboard from "./components/ResultsDashboard";
 import AdminDashboard from "./components/AdminDashboard";
 import CategoriesManagement from "./components/CategoriesManagement";
-import { getAppStatus } from "./utils/supabaseApi";
 
 export default function App() {
   const session = useSession();
-  const [appStatus, setAppStatus] = useState<boolean | null>(null);
-
-  const loadAppStatus = async () => {
-    try {
-      const { data, error } = await getAppStatus();
-      if (error) {
-        throw new Error("Error fetching app status");
-      }
-      const isRunning = data?.is_running ?? false;
-      setAppStatus(isRunning);
-    } catch (error) {
-      setAppStatus(false);
-    }
-  };
-
-  useEffect(() => {
-    loadAppStatus();
-  }, []);
-
-  if (appStatus === null) {
-    return <Box>Loading...</Box>;
-  }
-
-  if (!appStatus) {
-    return (
-      <Box
-        height="100vh"
-        display="flex"
-        alignItems="center"
-        justifyContent="center"
-      >
-        <Card width="350px">
-          <CardHeader>Voting is currently closed</CardHeader>
-          <CardBody>
-            <Text>Please check back later when voting is enabled.</Text>
-          </CardBody>
-        </Card>
-      </Box>
-    );
-  }
 
   return (
     <ChakraProvider>

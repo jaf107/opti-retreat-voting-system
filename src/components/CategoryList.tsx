@@ -1,7 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { Box, Button, Heading, SimpleGrid } from "@chakra-ui/react";
-import { fetchCategories } from "../utils/supabaseApi";
+import {
+  Box,
+  Button,
+  Card,
+  CardBody,
+  CardHeader,
+  Heading,
+  SimpleGrid,
+  Text,
+} from "@chakra-ui/react";
+import { fetchCategories, getAppStatus } from "../utils/supabaseApi";
 
 type Category = {
   id: string;
@@ -22,6 +31,46 @@ const CategoryList: React.FC = () => {
     };
     loadCategories();
   }, []);
+
+  const [appStatus, setAppStatus] = useState<boolean | null>(null);
+
+  const loadAppStatus = async () => {
+    try {
+      const { data, error } = await getAppStatus();
+      if (error) {
+        throw new Error("Error fetching app status");
+      }
+      const isRunning = data?.is_running ?? false;
+      setAppStatus(isRunning);
+    } catch (error) {
+      setAppStatus(false);
+    }
+  };
+
+  useEffect(() => {
+    loadAppStatus();
+  }, []);
+
+  if (appStatus === null) {
+    return <Box>Loading...</Box>;
+  }
+  if (!appStatus) {
+    return (
+      <Box
+        height="100vh"
+        display="flex"
+        alignItems="center"
+        justifyContent="center"
+      >
+        <Card width="350px">
+          <CardHeader>Voting is currently closed</CardHeader>
+          <CardBody>
+            <Text>Please check back later when voting is enabled.</Text>
+          </CardBody>
+        </Card>
+      </Box>
+    );
+  }
 
   return (
     <Box>

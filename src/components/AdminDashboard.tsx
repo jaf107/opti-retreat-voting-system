@@ -10,6 +10,7 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
+import { getAppStatus, toggleAppStatus } from "../utils/supabaseApi";
 
 const AdminDashboard: React.FC = () => {
   const [isVotingEnabled, setIsVotingEnabled] = useState<boolean>(false);
@@ -19,14 +20,19 @@ const AdminDashboard: React.FC = () => {
     checkVotingStatus();
   }, []);
 
+  useEffect(() => {
+    checkVotingStatus();
+  }, []);
+
   const checkVotingStatus = async () => {
     try {
-      const response = await fetch("http://localhost:3001/api/voting-status");
-      const data = await response.json();
-      setIsVotingEnabled(data.isEnabled);
+      const { data, error } = await getAppStatus();
+      if (error) throw error;
+      setIsVotingEnabled(!!data?.is_running);
     } catch (error) {
       toast({
         title: "Error checking voting status",
+        description: error instanceof Error ? error.message : "Unknown error",
         status: "error",
         duration: 3000,
         isClosable: true,
@@ -36,12 +42,11 @@ const AdminDashboard: React.FC = () => {
 
   const toggleVoting = async () => {
     try {
-      await fetch("http://localhost:3001/api/toggle-voting", {
-        method: "POST",
-      });
-      setIsVotingEnabled(!isVotingEnabled);
+      const { data, error } = await toggleAppStatus();
+      if (error) throw error;
+      setIsVotingEnabled(data || false);
       toast({
-        title: `Voting ${isVotingEnabled ? "disabled" : "enabled"}`,
+        title: `Voting ${data ? "enabled" : "disabled"}`,
         status: "success",
         duration: 3000,
         isClosable: true,
@@ -49,13 +54,13 @@ const AdminDashboard: React.FC = () => {
     } catch (error) {
       toast({
         title: "Error toggling voting status",
+        description: error instanceof Error ? error.message : "Unknown error",
         status: "error",
         duration: 3000,
         isClosable: true,
       });
     }
   };
-
   return (
     <Container maxW="container.xl" py={8}>
       <Heading as="h1" size="2xl" mb={8}>

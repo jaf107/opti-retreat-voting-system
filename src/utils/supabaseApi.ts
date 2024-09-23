@@ -8,6 +8,25 @@ export const getAppStatus = async () => {
     .single();
   return { data, error };
 };
+
+export const toggleAppStatus = async () => {
+  const { data: currentStatus } = await getAppStatus();
+
+  if (currentStatus === null) {
+    return { data: null, error: "Failed to fetch current status" };
+  }
+
+  const newStatus = !currentStatus.is_running;
+
+  const { data, error } = await supabase
+    .from("app_status")
+    .update({ is_running: newStatus })
+    .eq("id", 1)
+    .single();
+
+  return { data: newStatus, error: error };
+};
+
 export const fetchCategories = async () => {
   const { data, error } = await supabase.from("categories").select("*");
   return { data, error };

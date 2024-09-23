@@ -89,6 +89,19 @@ export const fetchResults = async () => {
   }
 };
 
+export const updateVote = async (
+  sessionId: string,
+  categoryId: string,
+  optionId: string
+) => {
+  const { data, error } = await supabase
+    .from("user_votes")
+    .update({ option_id: optionId })
+    .match({ session_id: sessionId, category_id: categoryId });
+
+  return { data, error };
+};
+
 export const registerUser = async (sessionId: string) => {
   const { data, error } = await supabase.from("user_sessions").insert([
     {

@@ -6,6 +6,7 @@ import {
   fetchPollOptions,
   submitVote,
   checkIfUserHasVoted,
+  updateVote,
 } from "../utils/supabaseApi";
 import {
   Box,
@@ -15,7 +16,7 @@ import {
   Image,
   SimpleGrid,
   useToast,
-  // VStack,
+  VStack,
   chakra,
 } from "@chakra-ui/react";
 import { motion, isValidMotionProp, AnimatePresence } from "framer-motion";
@@ -95,8 +96,33 @@ const VotingFlow: React.FC = () => {
     }
   };
 
-  const handleSelectOption = (optionId: string) => {
-    if (!hasVoted) {
+  const handleSelectOption = async (optionId: string) => {
+    const currentCategory = categories[currentCategoryIndex];
+    if (hasVoted && selectedOptionId !== optionId) {
+      // Update the vote
+      const { error } = await updateVote(
+        sessionId || "",
+        currentCategory.id,
+        optionId
+      );
+      if (error) {
+        toast({
+          title: "Error updating vote",
+          description: error.message,
+          status: "error",
+          duration: 3000,
+          isClosable: true,
+        });
+      } else {
+        setSelectedOptionId(optionId);
+        toast({
+          title: "Vote updated successfully",
+          status: "success",
+          duration: 3000,
+          isClosable: true,
+        });
+      }
+    } else if (!hasVoted) {
       setSelectedOptionId(optionId);
     }
   };
@@ -178,7 +204,7 @@ const VotingFlow: React.FC = () => {
               borderWidth="1px"
               borderRadius="lg"
               overflow="hidden"
-              cursor={hasVoted ? "default" : "pointer"}
+              cursor="pointer"
               onClick={() => handleSelectOption(option.id)}
               bg={selectedOptionId === option.id ? "blue.100" : "white"}
               boxShadow={
@@ -203,20 +229,18 @@ const VotingFlow: React.FC = () => {
                 <Heading as="h3" size="md" mb={2}>
                   {option.name}
                 </Heading>
-                {!hasVoted && (
-                  <Button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleSelectOption(option.id);
-                    }}
-                    colorScheme={
-                      selectedOptionId === option.id ? "blue" : "gray"
-                    }
-                    width="100%"
-                  >
-                    Select
-                  </Button>
-                )}
+                <Button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleSelectOption(option.id);
+                  }}
+                  colorScheme={selectedOptionId === option.id ? "blue" : "gray"}
+                  width="100%"
+                >
+                  {hasVoted && selectedOptionId === option.id
+                    ? "Selected"
+                    : "Select"}
+                </Button>
               </Box>
             </MotionBox>
           ))}

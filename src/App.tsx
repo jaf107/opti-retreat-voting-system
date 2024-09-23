@@ -89,9 +89,6 @@ export default function App() {
               <Link to="/dashboard">
                 <Button variant="outline">Dashboard</Button>
               </Link>
-              <Link to="/admin/categories">
-                <Button variant="outline">Category</Button>
-              </Link>
             </Flex>
             <VStack spacing={4} align="stretch">
               <Routes>

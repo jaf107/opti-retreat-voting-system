@@ -89,14 +89,11 @@ export default function App() {
               <Link to="/dashboard">
                 <Button variant="outline">Dashboard</Button>
               </Link>
-              <Link to="/admin/categories">
-                <Button variant="outline">Category</Button>
-              </Link>
             </Flex>
             <VStack spacing={4} align="stretch">
               <Routes>
                 <Route path="/" element={<CategoryList />} />
-                <Route path="/bingo" element={<VotingFlow />} />
+                <Route path="/voting" element={<VotingFlow />} />
                 <Route path="/dashboard" element={<Dashboard />} />
                 <Route path="/admin" element={<AdminDashboard />} />
                 <Route

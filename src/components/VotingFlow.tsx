@@ -66,7 +66,6 @@ const VotingFlow: React.FC = () => {
     if (categories.length > 0) {
       loadOptionsForCurrentCategory();
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [categories, currentCategoryIndex]);
 
   const loadOptionsForCurrentCategory = async () => {

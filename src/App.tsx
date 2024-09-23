@@ -16,6 +16,8 @@ import CategoryList from "./components/CategoryList";
 import VotingFlow from "./components/VotingFlow";
 import Dashboard from "./components/ResultsDashboard";
 import { getAppStatus } from "./utils/supabaseApi";
+import AdminDashboard from "./components/AdminDashboard";
+import CategoriesManagement from "./components/CategoriesManagement";
 
 // Types
 export type Category = {
@@ -87,12 +89,20 @@ export default function App() {
               <Link to="/dashboard">
                 <Button variant="outline">Dashboard</Button>
               </Link>
+              <Link to="/admin/categories">
+                <Button variant="outline">Category</Button>
+              </Link>
             </Flex>
             <VStack spacing={4} align="stretch">
               <Routes>
                 <Route path="/" element={<CategoryList />} />
                 <Route path="/bingo" element={<VotingFlow />} />
                 <Route path="/dashboard" element={<Dashboard />} />
+                <Route path="/admin" element={<AdminDashboard />} />
+                <Route
+                  path="/admin/categories"
+                  element={<CategoriesManagement />}
+                />
               </Routes>
             </VStack>
           </Box>

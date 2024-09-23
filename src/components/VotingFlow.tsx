@@ -7,6 +7,8 @@ import {
   submitVote,
   checkIfUserHasVoted,
   updateVote,
+  getNextCategory,
+  getPreviousCategory,
 } from "../utils/supabaseApi";
 import {
   Box,
@@ -42,6 +44,10 @@ const VotingFlow: React.FC = () => {
   const [category, setCategory] = useState<Category | null>(null);
   const [options, setOptions] = useState<Option[]>([]);
   const [selectedOptionId, setSelectedOptionId] = useState<string | null>(null);
+  const [nextCategoryId, setNextCategoryId] = useState<string | null>(null);
+  const [previousCategoryId, setPreviousCategoryId] = useState<string | null>(
+    null
+  );
   const navigate = useNavigate();
   const toast = useToast();
 
@@ -78,6 +84,20 @@ const VotingFlow: React.FC = () => {
       }
     };
     loadOptions();
+  }, [categoryId]);
+
+  useEffect(() => {
+    const loadAdjacentCategories = async () => {
+      if (categoryId) {
+        const { data: nextCategory } = await getNextCategory(categoryId);
+        const { data: previousCategory } = await getPreviousCategory(
+          categoryId
+        );
+        setNextCategoryId(nextCategory?.id || null);
+        setPreviousCategoryId(previousCategory?.id || null);
+      }
+    };
+    loadAdjacentCategories();
   }, [categoryId]);
 
   const checkIfVoted = async (categoryId: string) => {
@@ -159,9 +179,25 @@ const VotingFlow: React.FC = () => {
     }
   };
 
+  const handleNext = () => {
+    if (nextCategoryId) {
+      navigate(`/vote/${nextCategoryId}`);
+    } else {
+      navigate("/dashboard");
+    }
+  };
+
+  const handlePrevious = () => {
+    if (previousCategoryId) {
+      navigate(`/vote/${previousCategoryId}`);
+    } else {
+      navigate("/");
+    }
+  };
+
   const handlers = useSwipeable({
-    onSwipedLeft: () => navigate("/dashboard"),
-    onSwipedRight: () => navigate("/"),
+    onSwipedLeft: handleNext,
+    onSwipedRight: handlePrevious,
     trackMouse: true,
   });
 
@@ -182,7 +218,6 @@ const VotingFlow: React.FC = () => {
               initial={{ opacity: 0, y: 50 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -50 }}
-              // transition={{ duration: 0.3 }}
               borderWidth="1px"
               borderRadius="lg"
               overflow="hidden"
@@ -229,10 +264,12 @@ const VotingFlow: React.FC = () => {
         </SimpleGrid>
       </AnimatePresence>
       <Flex justifyContent="space-between" mt={4}>
-        <Button onClick={() => navigate("/")}>Back to Categories</Button>
+        <Button onClick={handlePrevious} disabled={!previousCategoryId}>
+          Previous
+        </Button>
         {hasVoted ? (
-          <Button onClick={() => navigate("/dashboard")} colorScheme="blue">
-            View Results
+          <Button onClick={handleNext} colorScheme="blue">
+            {nextCategoryId ? "Next" : "View Results"}
           </Button>
         ) : (
           <Button

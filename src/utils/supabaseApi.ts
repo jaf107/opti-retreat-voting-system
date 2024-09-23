@@ -13,6 +13,54 @@ export const fetchCategories = async () => {
   return { data, error };
 };
 
+export const fetchCategoriesInOrder = async () => {
+  const { data, error } = await supabase
+    .from("categories")
+    .select("*")
+    .order("order_index", { ascending: true });
+  return { data, error };
+};
+
+export const getNextCategory = async (currentCategoryId: string) => {
+  const { data: currentCategory, error: currentError } = await supabase
+    .from("categories")
+    .select("order_index")
+    .eq("id", currentCategoryId)
+    .single();
+
+  if (currentError) return { data: null, error: currentError };
+
+  const { data, error } = await supabase
+    .from("categories")
+    .select("*")
+    .gt("order_index", currentCategory.order_index)
+    .order("order_index", { ascending: true })
+    .limit(1)
+    .single();
+
+  return { data, error };
+};
+
+export const getPreviousCategory = async (currentCategoryId: string) => {
+  const { data: currentCategory, error: currentError } = await supabase
+    .from("categories")
+    .select("order_index")
+    .eq("id", currentCategoryId)
+    .single();
+
+  if (currentError) return { data: null, error: currentError };
+
+  const { data, error } = await supabase
+    .from("categories")
+    .select("*")
+    .lt("order_index", currentCategory.order_index)
+    .order("order_index", { ascending: false })
+    .limit(1)
+    .single();
+
+  return { data, error };
+};
+
 export const fetchCategory = async (categoryId: string) => {
   const { data, error } = await supabase
     .from("categories")

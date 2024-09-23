@@ -20,9 +20,11 @@ import {
   useToast,
   VStack,
   chakra,
+  Text,
 } from "@chakra-ui/react";
 import { motion, isValidMotionProp, AnimatePresence } from "framer-motion";
 import { useSwipeable } from "react-swipeable";
+import { ChevronLeftIcon, ChevronRightIcon } from "@chakra-ui/icons";
 
 type Category = {
   id: string;
@@ -206,12 +208,33 @@ const VotingFlow: React.FC = () => {
   }
 
   return (
-    <Box {...handlers}>
-      <Heading as="h2" size="lg" mb={4}>
+    <Box {...handlers} position="relative" height="100vh">
+      <Heading as="h2" size="lg" mb={4} textAlign="center">
         {category.name}
       </Heading>
+      <Flex
+        position="absolute"
+        left="0"
+        right="0"
+        top="50%"
+        transform="translateY(-50%)"
+        justifyContent="space-between"
+        px={4}
+        zIndex={10}
+      >
+        <Button
+          onClick={handlePrevious}
+          disabled={!previousCategoryId}
+          leftIcon={<ChevronLeftIcon />}
+        >
+          Prev
+        </Button>
+        <Button onClick={handleNext} rightIcon={<ChevronRightIcon />}>
+          {nextCategoryId ? "Next" : "Finish"}
+        </Button>
+      </Flex>
       <AnimatePresence mode="wait">
-        <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} spacing={4}>
+        <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} spacing={4} px={4}>
           {options.map((option) => (
             <MotionBox
               key={option.id}
@@ -263,15 +286,8 @@ const VotingFlow: React.FC = () => {
           ))}
         </SimpleGrid>
       </AnimatePresence>
-      <Flex justifyContent="space-between" mt={4}>
-        <Button onClick={handlePrevious} disabled={!previousCategoryId}>
-          Previous
-        </Button>
-        {hasVoted ? (
-          <Button onClick={handleNext} colorScheme="blue">
-            {nextCategoryId ? "Next" : "View Results"}
-          </Button>
-        ) : (
+      <Flex justifyContent="center" mt={4}>
+        {!hasVoted && (
           <Button
             onClick={handleVote}
             colorScheme="green"
@@ -279,6 +295,11 @@ const VotingFlow: React.FC = () => {
           >
             Vote
           </Button>
+        )}
+        {hasVoted && (
+          <Text fontSize="lg" fontWeight="bold" color="green.500">
+            Vote submitted!
+          </Text>
         )}
       </Flex>
     </Box>

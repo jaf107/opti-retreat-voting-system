@@ -1,4 +1,4 @@
-import { createContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { BrowserRouter as Router, Route, Routes, Link } from "react-router-dom";
 import {
   ChakraProvider,
@@ -8,42 +8,24 @@ import {
   VStack,
   Card,
   CardHeader,
+  CardBody,
+  Text,
 } from "@chakra-ui/react";
+import { SessionProvider } from "./contexts/SessionContext";
 import useSession from "./hooks/useSession";
 
 // Components
 import CategoryList from "./components/CategoryList";
 import VotingFlow from "./components/VotingFlow";
-import Dashboard from "./components/ResultsDashboard";
-import { getAppStatus } from "./utils/supabaseApi";
+import ResultsDashboard from "./components/ResultsDashboard";
 import AdminDashboard from "./components/AdminDashboard";
 import CategoriesManagement from "./components/CategoriesManagement";
-
-// Types
-export type Category = {
-  id: string;
-  name: string;
-};
-
-export type Option = {
-  id: string;
-  name: string;
-  image_url: string;
-};
-
-export type Vote = {
-  categoryId: string;
-  optionId: string;
-};
-
-// Create SessionContext
-export const SessionContext = createContext<ReturnType<
-  typeof useSession
-> | null>(null);
+import { getAppStatus } from "./utils/supabaseApi";
 
 export default function App() {
   const session = useSession();
   const [appStatus, setAppStatus] = useState<boolean | null>(null);
+
   const loadAppStatus = async () => {
     try {
       const { data, error } = await getAppStatus();
@@ -62,22 +44,30 @@ export default function App() {
   }, []);
 
   if (appStatus === null) {
-    return <div>Loading...</div>;
+    return <Box>Loading...</Box>;
   }
 
   if (!appStatus) {
     return (
-      <div className="flex items-center justify-center h-screen">
-        <Card className="w-[350px]">
+      <Box
+        height="100vh"
+        display="flex"
+        alignItems="center"
+        justifyContent="center"
+      >
+        <Card width="350px">
           <CardHeader>Voting is currently closed</CardHeader>
-          <p>Please check back later when voting is enabled.</p>
+          <CardBody>
+            <Text>Please check back later when voting is enabled.</Text>
+          </CardBody>
         </Card>
-      </div>
+      </Box>
     );
   }
+
   return (
     <ChakraProvider>
-      <SessionContext.Provider value={session}>
+      <SessionProvider value={session}>
         <Router>
           <Box minHeight="100vh" bg="gray.100" p={4}>
             <Flex as="nav" mb={4}>
@@ -87,14 +77,19 @@ export default function App() {
                 </Button>
               </Link>
               <Link to="/dashboard">
-                <Button variant="outline">Dashboard</Button>
+                <Button variant="outline" mr={2}>
+                  Dashboard
+                </Button>
+              </Link>
+              <Link to="/admin">
+                <Button variant="outline">Admin</Button>
               </Link>
             </Flex>
             <VStack spacing={4} align="stretch">
               <Routes>
                 <Route path="/" element={<CategoryList />} />
-                <Route path="/voting" element={<VotingFlow />} />
-                <Route path="/dashboard" element={<Dashboard />} />
+                <Route path="/vote/:categoryId" element={<VotingFlow />} />
+                <Route path="/dashboard" element={<ResultsDashboard />} />
                 <Route path="/admin" element={<AdminDashboard />} />
                 <Route
                   path="/admin/categories"
@@ -104,7 +99,7 @@ export default function App() {
             </VStack>
           </Box>
         </Router>
-      </SessionContext.Provider>
+      </SessionProvider>
     </ChakraProvider>
   );
 }

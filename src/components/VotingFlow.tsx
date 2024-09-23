@@ -1,8 +1,8 @@
 import React, { useEffect, useState, useContext } from "react";
-import { useNavigate } from "react-router-dom";
-import { SessionContext } from "../App";
+import { useParams, useNavigate } from "react-router-dom";
+import { SessionContext } from "../contexts/SessionContext";
 import {
-  fetchCategories,
+  fetchCategory,
   fetchPollOptions,
   submitVote,
   checkIfUserHasVoted,
@@ -20,7 +20,7 @@ import {
   chakra,
 } from "@chakra-ui/react";
 import { motion, isValidMotionProp, AnimatePresence } from "framer-motion";
-import { useSwipeable, SwipeableHandlers } from "react-swipeable";
+import { useSwipeable } from "react-swipeable";
 
 type Category = {
   id: string;
@@ -38,8 +38,8 @@ const MotionBox = chakra(motion.div, {
 });
 
 const VotingFlow: React.FC = () => {
-  const [categories, setCategories] = useState<Category[]>([]);
-  const [currentCategoryIndex, setCurrentCategoryIndex] = useState(0);
+  const { categoryId } = useParams<{ categoryId: string }>();
+  const [category, setCategory] = useState<Category | null>(null);
   const [options, setOptions] = useState<Option[]>([]);
   const [selectedOptionId, setSelectedOptionId] = useState<string | null>(null);
   const navigate = useNavigate();
@@ -52,35 +52,33 @@ const VotingFlow: React.FC = () => {
   const { sessionId, hasVoted, setHasVoted } = session;
 
   useEffect(() => {
-    const loadCategories = async () => {
-      const { data, error } = await fetchCategories();
-      if (error) {
-        console.error("Error fetching categories:", error);
-      } else {
-        setCategories(data || []);
+    const loadCategory = async () => {
+      if (categoryId) {
+        const { data, error } = await fetchCategory(categoryId);
+        if (error) {
+          console.error("Error fetching category:", error);
+        } else {
+          setCategory(data);
+        }
       }
     };
-    loadCategories();
-  }, []);
+    loadCategory();
+  }, [categoryId]);
 
   useEffect(() => {
-    if (categories.length > 0) {
-      loadOptionsForCurrentCategory();
-    }
-  }, [categories, currentCategoryIndex]);
-
-  const loadOptionsForCurrentCategory = async () => {
-    const currentCategory = categories[currentCategoryIndex];
-    if (currentCategory) {
-      const { data, error } = await fetchPollOptions(currentCategory.id);
-      if (error) {
-        console.error("Error fetching options:", error);
-      } else {
-        setOptions(data || []);
+    const loadOptions = async () => {
+      if (categoryId) {
+        const { data, error } = await fetchPollOptions(categoryId);
+        if (error) {
+          console.error("Error fetching options:", error);
+        } else {
+          setOptions(data || []);
+        }
+        checkIfVoted(categoryId);
       }
-      checkIfVoted(currentCategory.id);
-    }
-  };
+    };
+    loadOptions();
+  }, [categoryId]);
 
   const checkIfVoted = async (categoryId: string) => {
     const { data, error } = await checkIfUserHasVoted(
@@ -97,12 +95,11 @@ const VotingFlow: React.FC = () => {
   };
 
   const handleSelectOption = async (optionId: string) => {
-    const currentCategory = categories[currentCategoryIndex];
     if (hasVoted && selectedOptionId !== optionId) {
       // Update the vote
       const { error } = await updateVote(
         sessionId || "",
-        currentCategory.id,
+        categoryId || "",
         optionId
       );
       if (error) {
@@ -138,10 +135,9 @@ const VotingFlow: React.FC = () => {
       return;
     }
 
-    const currentCategory = categories[currentCategoryIndex];
     const { error } = await submitVote(
       sessionId || "",
-      currentCategory.id,
+      categoryId || "",
       selectedOptionId
     );
     if (!error) {
@@ -163,37 +159,23 @@ const VotingFlow: React.FC = () => {
     }
   };
 
-  const goToPreviousCategory = () => {
-    if (currentCategoryIndex > 0) {
-      setCurrentCategoryIndex(currentCategoryIndex - 1);
-    }
-  };
-
-  const goToNextCategory = () => {
-    if (currentCategoryIndex < categories.length - 1) {
-      setCurrentCategoryIndex(currentCategoryIndex + 1);
-    } else {
-      navigate("/dashboard");
-    }
-  };
-
-  const handlers: SwipeableHandlers = useSwipeable({
-    onSwipedLeft: () => goToNextCategory(),
-    onSwipedRight: () => goToPreviousCategory(),
+  const handlers = useSwipeable({
+    onSwipedLeft: () => navigate("/dashboard"),
+    onSwipedRight: () => navigate("/"),
     trackMouse: true,
   });
+
+  if (!category) {
+    return <Box>Loading...</Box>;
+  }
 
   return (
     <Box {...handlers}>
       <Heading as="h2" size="lg" mb={4}>
-        {categories[currentCategoryIndex]?.name || "Loading..."}
+        {category.name}
       </Heading>
       <AnimatePresence mode="wait">
-        <SimpleGrid
-          columns={{ base: 1, md: 2, lg: 3 }}
-          spacing={4}
-          key={currentCategoryIndex}
-        >
+        <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} spacing={4}>
           {options.map((option) => (
             <MotionBox
               key={option.id}
@@ -247,15 +229,10 @@ const VotingFlow: React.FC = () => {
         </SimpleGrid>
       </AnimatePresence>
       <Flex justifyContent="space-between" mt={4}>
-        <Button
-          onClick={goToPreviousCategory}
-          disabled={currentCategoryIndex === 0}
-        >
-          Previous
-        </Button>
+        <Button onClick={() => navigate("/")}>Back to Categories</Button>
         {hasVoted ? (
-          <Button onClick={goToNextCategory} colorScheme="blue">
-            Next
+          <Button onClick={() => navigate("/dashboard")} colorScheme="blue">
+            View Results
           </Button>
         ) : (
           <Button

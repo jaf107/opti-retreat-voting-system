@@ -13,6 +13,16 @@ export const fetchCategories = async () => {
   return { data, error };
 };
 
+export const fetchCategory = async (categoryId: string) => {
+  const { data, error } = await supabase
+    .from("categories")
+    .select("*")
+    .eq("id", categoryId)
+    .single();
+
+  return { data, error };
+};
+
 export const fetchPollOptions = async (categoryId: string) => {
   try {
     const { data, error } = await supabase

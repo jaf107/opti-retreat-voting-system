@@ -32,22 +32,21 @@ const CategoryList: React.FC = () => {
   }, []);
 
   const handleStartBingo = () => {
-    navigate("/bingo");
+    navigate("/voting");
   };
 
   return (
     <Box>
       <Heading as="h1" mb={4}>
-        Bingo Voting App
+        UnOptimized Awards 2024
       </Heading>
-      <Text mb={4}>Session ID: {sessionId}</Text>
 
       {loading ? (
         <Spinner />
       ) : categories.length > 0 ? (
         <VStack spacing={4} align="stretch">
           <Button colorScheme="blue" onClick={handleStartBingo}>
-            Start Bingo
+            Start Voting
           </Button>
           <Heading as="h2" size="lg" mb={4}>
             Categories

@@ -96,7 +96,7 @@ export default function App() {
             <VStack spacing={4} align="stretch">
               <Routes>
                 <Route path="/" element={<CategoryList />} />
-                <Route path="/bingo" element={<VotingFlow />} />
+                <Route path="/voting" element={<VotingFlow />} />
                 <Route path="/dashboard" element={<Dashboard />} />
                 <Route path="/admin" element={<AdminDashboard />} />
                 <Route

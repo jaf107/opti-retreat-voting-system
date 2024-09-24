@@ -1,5 +1,15 @@
+import React from "react";
 import { BrowserRouter as Router, Route, Routes, Link } from "react-router-dom";
-import { ChakraProvider, Box, Flex, Button, VStack } from "@chakra-ui/react";
+import {
+  ChakraProvider,
+  Box,
+  Flex,
+  Button,
+  VStack,
+  Image,
+  Center,
+  Text,
+} from "@chakra-ui/react";
 import { SessionProvider } from "./contexts/SessionContext";
 import useSession from "./hooks/useSession";
 
@@ -18,31 +28,45 @@ export default function App() {
       <SessionProvider value={session}>
         <Router>
           <Box minHeight="100vh" bg="gray.100" p={4}>
-            <Flex as="nav" mb={4}>
-              <Link to="/">
-                <Button variant="outline" mr={2}>
-                  Awards
-                </Button>
-              </Link>
-              <Link to="/dashboard">
-                <Button variant="outline" mr={2}>
-                  Dashboard
-                </Button>
-              </Link>
-              <Link to="/admin">
-                <Button variant="outline">Admin</Button>
-              </Link>
+            <Flex as="nav" mb={4} alignItems="center">
+              <Box flex="1">
+                <Link to={"/"}>
+                  <Image src="/optimizely-logo.png" height="40px" />
+                </Link>
+              </Box>
+
+              <Center flex="2">
+                <Link to="/">
+                  <Button variant="outline" mx={2}>
+                    Awards
+                  </Button>
+                </Link>
+                <Link to="/result">
+                  <Button variant="outline" mx={2}>
+                    Results
+                  </Button>
+                </Link>
+              </Center>
+              <Box flex="1" />
             </Flex>
-            <VStack spacing={4} align="stretch">
+            <VStack
+              spacing={4}
+              align="stretch"
+              style={{
+                height: "95vh",
+              }}
+            >
               <Routes>
                 <Route path="/" element={<CategoryList />} />
                 <Route path="/vote/:categoryId" element={<VotingFlow />} />
-                <Route path="/dashboard" element={<ResultsDashboard />} />
+                <Route path="/result" element={<ResultsDashboard />} />
                 <Route path="/admin" element={<AdminDashboard />} />
+                {/* 
+                // Not supported yet
                 <Route
                   path="/admin/categories"
-                  element={<CategoriesManagement />}
-                />
+                  element={<CategoriesManagement />} 
+                /> */}
               </Routes>
             </VStack>
           </Box>

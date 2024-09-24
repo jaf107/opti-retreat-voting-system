@@ -92,13 +92,18 @@ const CategoryList: React.FC = () => {
   return (
     <Box>
       <Flex as="h1" mb={6} alignItems="center" justifyContent="center">
-        <Image src="/optimizely-logo.png" height="40px" mr={4} />
-        <Heading>UnOptimized Awards Ceremony</Heading>
+        <Heading>UnOptimized Awards</Heading>
       </Flex>
       <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} spacing={4}>
         {categories.map((category) => (
           <Link key={category.id} to={`/vote/${category.id}`}>
-            <Button size="lg" width="100%" height="100px">
+            <Button
+              border={"1px"}
+              borderColor={"gray.400"}
+              size="lg"
+              width="100%"
+              height="100px"
+            >
               {category.name}
             </Button>
           </Link>

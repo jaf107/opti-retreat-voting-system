@@ -90,7 +90,7 @@ const CategoryList: React.FC = () => {
   }
 
   return (
-    <Box>
+    <Box p={8} borderRadius={"lg"} boxShadow="md" bg="gray.50">
       <Flex as="h1" mb={6} alignItems="center" justifyContent="center">
         <Heading>UnOptimized Awards</Heading>
       </Flex>

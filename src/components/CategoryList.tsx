@@ -7,8 +7,11 @@ import {
   CardBody,
   CardHeader,
   Heading,
+  Image,
   SimpleGrid,
+  Spinner,
   Text,
+  Flex,
 } from "@chakra-ui/react";
 import { fetchCategories, getAppStatus } from "../utils/supabaseApi";
 
@@ -19,6 +22,7 @@ type Category = {
 
 const CategoryList: React.FC = () => {
   const [categories, setCategories] = useState<Category[]>([]);
+  const [appStatus, setAppStatus] = useState<boolean | null>(null);
 
   useEffect(() => {
     const loadCategories = async () => {
@@ -31,8 +35,6 @@ const CategoryList: React.FC = () => {
     };
     loadCategories();
   }, []);
-
-  const [appStatus, setAppStatus] = useState<boolean | null>(null);
 
   const loadAppStatus = async () => {
     try {
@@ -89,9 +91,10 @@ const CategoryList: React.FC = () => {
 
   return (
     <Box>
-      <Heading as="h1" size="xl" mb={6} textAlign={"center"}>
-        UnOptimized Awards Ceremony
-      </Heading>
+      <Flex as="h1" mb={6} alignItems="center" justifyContent="center">
+        <Image src="/optimizely-logo.png" height="40px" mr={4} />
+        <Heading>UnOptimized Awards Ceremony</Heading>
+      </Flex>
       <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} spacing={4}>
         {categories.map((category) => (
           <Link key={category.id} to={`/vote/${category.id}`}>

@@ -21,7 +21,7 @@ export default function App() {
             <Flex as="nav" mb={4}>
               <Link to="/">
                 <Button variant="outline" mr={2}>
-                  Bingo
+                  Awards
                 </Button>
               </Link>
               <Link to="/dashboard">

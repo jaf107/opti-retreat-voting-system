@@ -21,6 +21,7 @@ import {
   Text,
   VStack,
   chakra,
+  Container,
 } from "@chakra-ui/react";
 import { motion, AnimatePresence, isValidMotionProp } from "framer-motion";
 import { useSwipeable } from "react-swipeable";
@@ -180,7 +181,7 @@ const VotingFlow: React.FC = () => {
     if (nextCategoryId) {
       navigate(`/vote/${nextCategoryId}`);
     } else {
-      navigate("/dashboard");
+      navigate("/");
     }
   };
 
@@ -203,97 +204,107 @@ const VotingFlow: React.FC = () => {
   }
 
   return (
-    <Box {...handlers} position="relative" height="100vh">
-      <Heading as="h2" size="lg" mb={4} textAlign="center">
-        {category.name}
-      </Heading>
-      <Flex
-        position="absolute"
-        left="0"
-        right="0"
-        top="50%"
-        transform="translateY(-50%)"
-        justifyContent="space-between"
-        px={4}
-        zIndex={10}
-      >
-        <Button
-          onClick={handlePrevious}
-          disabled={!previousCategoryId}
-          leftIcon={<ChevronLeftIcon />}
+    <Box {...handlers} position="relative" minHeight="100vh">
+      <Container maxW="4xl" centerContent>
+        <Heading as="h2" size="lg" mb={4} textAlign="center">
+          {category?.name}
+        </Heading>
+        <Flex
+          position="absolute"
+          left="0"
+          right="0"
+          top="50%"
+          transform="translateY(-50%)"
+          justifyContent="space-between"
+          px={4}
+          zIndex={10}
         >
-          Prev
-        </Button>
-        <Button onClick={handleNext} rightIcon={<ChevronRightIcon />}>
-          {nextCategoryId ? "Next" : "Finish"}
-        </Button>
-      </Flex>
-      <AnimatePresence mode="wait">
-        <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} spacing={4} px={4}>
-          {options.map((option) => (
-            <MotionBox
-              key={option.id}
-              initial={{ opacity: 0, y: 50 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -50 }}
-            >
-              <Box
-                borderWidth="1px"
-                borderRadius="lg"
-                overflow="hidden"
-                cursor="pointer"
-                onClick={() => handleSelectOption(option.id)}
-                bg={selectedOptionId === option.id ? "blue.100" : "white"}
-                boxShadow={
-                  selectedOptionId === option.id
-                    ? "0 0 0 3px rgba(66, 153, 225, 0.6)"
-                    : "none"
-                }
+          <Button
+            onClick={handlePrevious}
+            disabled={!previousCategoryId}
+            leftIcon={<ChevronLeftIcon />}
+          >
+            Prev
+          </Button>
+          <Button onClick={handleNext} rightIcon={<ChevronRightIcon />}>
+            {nextCategoryId ? "Next" : "Finish"}
+          </Button>
+        </Flex>
+        <AnimatePresence mode="wait">
+          <SimpleGrid
+            columns={{ base: 2 }}
+            spacing={6}
+            px={4}
+            justifyItems="center"
+            alignItems="center"
+          >
+            {options.map((option) => (
+              <MotionBox
+                key={option.id}
+                initial={{ opacity: 0, y: 50 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -50 }}
+                maxW="lg"
+                w="100%"
               >
-                <Box position="relative" pb="100%">
-                  <Image
-                    src={option.image_url}
-                    alt={option.name}
-                    objectFit="cover"
-                    position="absolute"
-                    top="0"
-                    left="0"
-                    width="100%"
-                    height="100%"
-                  />
+                <Box
+                  borderWidth="1px"
+                  borderRadius="lg"
+                  overflow="hidden"
+                  cursor="pointer"
+                  onClick={() => handleSelectOption(option.id)}
+                  bg={selectedOptionId === option.id ? "blue.100" : "white"}
+                  boxShadow={
+                    selectedOptionId === option.id
+                      ? "0 0 0 3px rgba(66, 153, 225, 0.6)"
+                      : "none"
+                  }
+                >
+                  <Box position="relative" pb="75%">
+                    <Image
+                      src={option.image_url}
+                      alt={option.name}
+                      objectFit="cover"
+                      position="absolute"
+                      top="0"
+                      left="0"
+                      width="100%"
+                      height="100%"
+                    />
+                  </Box>
+                  <VStack p={4} align="start">
+                    <Heading as="h3" size="md">
+                      {option.name}
+                    </Heading>
+                    <Text
+                      fontWeight="bold"
+                      color={
+                        selectedOptionId === option.id ? "blue.500" : "gray.500"
+                      }
+                    >
+                      {selectedOptionId === option.id
+                        ? "Selected"
+                        : "Click to select"}
+                    </Text>
+                  </VStack>
                 </Box>
-                <VStack p={4} align="start">
-                  <Heading as="h3" size="md">
-                    {option.name}
-                  </Heading>
-                  <Text
-                    fontWeight="bold"
-                    color={
-                      selectedOptionId === option.id ? "blue.500" : "gray.500"
-                    }
-                  >
-                    {selectedOptionId === option.id
-                      ? "Selected"
-                      : "Click to select"}
-                  </Text>
-                </VStack>
-              </Box>
-            </MotionBox>
-          ))}
-        </SimpleGrid>
-      </AnimatePresence>
-      <Flex justifyContent="center" mt={4}>
-        <Button
-          onClick={handleSubmit}
-          colorScheme="green"
-          disabled={
-            !selectedOptionId ||
-            (hasVoted && selectedOptionId === votedOptionId)
-          }
-        >
-          {hasVoted ? "Update Vote" : "Submit Vote"}
-        </Button>
-      </Flex>
+              </MotionBox>
+            ))}
+          </SimpleGrid>
+        </AnimatePresence>
+        <Flex justifyContent="center" mt={4}>
+          <Button
+            onClick={handleSubmit}
+            colorScheme="green"
+            disabled={
+              !selectedOptionId ||
+              (hasVoted && selectedOptionId === votedOptionId)
+            }
+          >
+            {hasVoted ? "Update Vote" : "Submit Vote"}
+          </Button>
+        </Flex>
+      </Container>
     </Box>
   );
 };

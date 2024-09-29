@@ -8,6 +8,7 @@ import {
   VStack,
   useColorModeValue,
   SimpleGrid,
+  Flex,
 } from "@chakra-ui/react";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import { Doughnut } from "react-chartjs-2";
@@ -133,10 +134,17 @@ const VotingResultsPieCharts: React.FC = () => {
 
   return (
     <Box p={4} bg={bgColor} borderRadius="lg" boxShadow="xl">
-      <Heading as="h2" size="xl" mb={6} textAlign="center" color={textColor}>
-        <FaChartPie style={{ display: "inline", marginRight: "10px" }} />
-        Voting Results
-      </Heading>
+      <Box py={12} textAlign="center">
+        <Flex alignItems="center" justifyContent="center">
+          <FaChartPie size={32} style={{ marginRight: "10px" }} />
+          <Heading as="h2" size="2xl">
+            Results
+          </Heading>
+        </Flex>
+        <Text mt={4} fontSize="lg">
+          See the latest voting results for all categories!
+        </Text>
+      </Box>
       {loading ? (
         <Spinner
           size="xl"

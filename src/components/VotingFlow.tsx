@@ -22,6 +22,7 @@ import {
   VStack,
   chakra,
   Container,
+  Badge,
 } from "@chakra-ui/react";
 import { motion, AnimatePresence, isValidMotionProp } from "framer-motion";
 import { useSwipeable } from "react-swipeable";
@@ -144,7 +145,6 @@ const VotingFlow: React.FC = () => {
           selectedOptionId
         ));
       } else {
-        // No change in vote, no need to update
         return;
       }
     } else {
@@ -204,63 +204,35 @@ const VotingFlow: React.FC = () => {
   }
 
   return (
-    <Box {...handlers} position="relative" minHeight="100vh">
+    <Box {...handlers} position="relative" minHeight="100vh" pb="120px">
       <Container maxW="4xl" centerContent>
-        <Heading as="h2" size="lg" mb={4} textAlign="center">
+        <Heading as="h2" size="xl" mb={8} textAlign="center">
           {category?.name}
         </Heading>
-        <Flex
-          position="absolute"
-          left="0"
-          right="0"
-          top="50%"
-          transform="translateY(-50%)"
-          justifyContent="space-between"
-          px={4}
-          zIndex={10}
-        >
-          <Button
-            onClick={handlePrevious}
-            disabled={!previousCategoryId}
-            leftIcon={<ChevronLeftIcon />}
-          >
-            Prev
-          </Button>
-          <Button onClick={handleNext} rightIcon={<ChevronRightIcon />}>
-            {nextCategoryId ? "Next" : "Finish"}
-          </Button>
-        </Flex>
         <AnimatePresence mode="wait">
-          <SimpleGrid
-            columns={{ base: 2 }}
-            spacing={6}
-            px={4}
-            justifyItems="center"
-            alignItems="center"
-          >
+          <SimpleGrid columns={2} spacing={4} px={4}>
             {options.map((option) => (
               <MotionBox
                 key={option.id}
                 initial={{ opacity: 0, y: 50 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -50 }}
-                maxW="lg"
-                w="100%"
               >
                 <Box
                   borderWidth="1px"
-                  borderRadius="lg"
+                  borderRadius="xl"
                   overflow="hidden"
                   cursor="pointer"
                   onClick={() => handleSelectOption(option.id)}
-                  bg={selectedOptionId === option.id ? "blue.100" : "white"}
-                  boxShadow={
-                    selectedOptionId === option.id
-                      ? "0 0 0 3px rgba(66, 153, 225, 0.6)"
-                      : "none"
-                  }
+                  bg={selectedOptionId === option.id ? "blue.50" : "white"}
+                  boxShadow="lg"
+                  transition="all 0.3s"
+                  _hover={{ transform: "translateY(-5px)" }}
+                  height="100%"
+                  display="flex"
+                  flexDirection="column"
                 >
-                  <Box position="relative" pb="75%">
+                  <Box position="relative" pb="100%">
                     <Image
                       src={option.image_url}
                       alt={option.name}
@@ -272,39 +244,67 @@ const VotingFlow: React.FC = () => {
                       height="100%"
                     />
                   </Box>
-                  <VStack p={4} align="start">
-                    <Heading as="h3" size="md">
+                  <VStack p={4} align="start" spacing={2} flex="1">
+                    <Heading as="h3" size="sm">
                       {option.name}
                     </Heading>
-                    <Text
-                      fontWeight="bold"
-                      color={
-                        selectedOptionId === option.id ? "blue.500" : "gray.500"
+                    <Badge
+                      colorScheme={
+                        selectedOptionId === option.id ? "blue" : "gray"
                       }
+                      variant="subtle"
+                      fontSize="xs"
                     >
                       {selectedOptionId === option.id
                         ? "Selected"
                         : "Click to select"}
-                    </Text>
+                    </Badge>
                   </VStack>
                 </Box>
               </MotionBox>
             ))}
           </SimpleGrid>
         </AnimatePresence>
-        <Flex justifyContent="center" mt={4}>
-          <Button
-            onClick={handleSubmit}
-            colorScheme="green"
-            disabled={
-              !selectedOptionId ||
-              (hasVoted && selectedOptionId === votedOptionId)
-            }
-          >
-            {hasVoted ? "Update Vote" : "Submit Vote"}
-          </Button>
-        </Flex>
       </Container>
+      <Flex
+        position="fixed"
+        bottom="70px"
+        left="0"
+        right="0"
+        justifyContent="space-between"
+        alignItems="center"
+        p={4}
+        zIndex={10}
+      >
+        <Button
+          onClick={handlePrevious}
+          disabled={!previousCategoryId}
+          leftIcon={<ChevronLeftIcon />}
+          variant="outline"
+          size="sm"
+        >
+          Prev
+        </Button>
+        <Button
+          onClick={handleSubmit}
+          colorScheme="blue"
+          isDisabled={
+            !selectedOptionId ||
+            (hasVoted && selectedOptionId === votedOptionId)
+          }
+          size="sm"
+        >
+          {hasVoted ? "Update Vote" : "Submit Vote"}
+        </Button>
+        <Button
+          onClick={handleNext}
+          rightIcon={<ChevronRightIcon />}
+          variant="outline"
+          size="sm"
+        >
+          {nextCategoryId ? "Next" : "Finish"}
+        </Button>
+      </Flex>
     </Box>
   );
 };

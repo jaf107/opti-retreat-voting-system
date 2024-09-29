@@ -14,6 +14,7 @@ import {
   Flex,
 } from "@chakra-ui/react";
 import { fetchCategories, getAppStatus } from "../utils/supabaseApi";
+import { FaAward } from "react-icons/fa";
 
 type Category = {
   id: string;
@@ -90,9 +91,19 @@ const CategoryList: React.FC = () => {
   }
 
   return (
-    <Box>
+    <Box p={8} borderRadius={"lg"} boxShadow="md" bg="gray.50">
       <Flex as="h1" mb={6} alignItems="center" justifyContent="center">
-        <Heading>UnOptimized Awards</Heading>
+        <Box py={12} textAlign="center">
+          <Flex alignItems="center" justifyContent="center">
+            <FaAward size={32} className="mr-2" />
+            <Heading as="h2" size="2xl">
+              Categories
+            </Heading>
+          </Flex>
+          <Text mt={4} fontSize="lg">
+            Explore our award categories and cast your votes!
+          </Text>
+        </Box>
       </Flex>
       <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} spacing={4}>
         {categories.map((category) => (

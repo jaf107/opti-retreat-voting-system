@@ -31,7 +31,7 @@ export default function App() {
                 <Link to="/">
                   <Image
                     src="/optimizely-logo.png"
-                    height="40px"
+                    height="24px"
                     alt="Optimizely Logo"
                     mr={4}
                   />

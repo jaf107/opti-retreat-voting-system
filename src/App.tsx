@@ -5,10 +5,9 @@ import {
   Box,
   Flex,
   Button,
-  VStack,
   Image,
-  Center,
   Text,
+  Heading,
 } from "@chakra-ui/react";
 import { SessionProvider } from "./contexts/SessionContext";
 import useSession from "./hooks/useSession";
@@ -27,35 +26,19 @@ export default function App() {
     <ChakraProvider>
       <SessionProvider value={session}>
         <Router>
-          <Box minHeight="100vh" bg="gray.100" p={4}>
-            <Flex as="nav" mb={4} alignItems="center">
+          <Flex flexDirection="column" minHeight="100vh">
+            <Flex as="nav" p={4} alignItems="center" bg="white" boxShadow="sm">
               <Box flex="1">
-                <Link to={"/"}>
-                  <Image src="/optimizely-logo.png" height="40px" />
+                <Link to="/">
+                  <Image
+                    src="/optimizely-logo.png"
+                    height="40px"
+                    alt="Optimizely Logo"
+                  />
                 </Link>
               </Box>
-
-              <Center flex="2">
-                <Link to="/">
-                  <Button variant="outline" mx={2}>
-                    Awards
-                  </Button>
-                </Link>
-                <Link to="/result">
-                  <Button variant="outline" mx={2}>
-                    Results
-                  </Button>
-                </Link>
-              </Center>
-              <Box flex="1" />
             </Flex>
-            <VStack
-              spacing={4}
-              align="stretch"
-              style={{
-                height: "95vh",
-              }}
-            >
+            <Box flex="1" overflowY="auto" p={4} bg="gray.100">
               <Routes>
                 <Route path="/" element={<CategoryList />} />
                 <Route path="/vote/:categoryId" element={<VotingFlow />} />
@@ -68,8 +51,31 @@ export default function App() {
                   element={<CategoriesManagement />} 
                 /> */}
               </Routes>
-            </VStack>
-          </Box>
+            </Box>
+            <Flex
+              as="footer"
+              justifyContent="center"
+              p={4}
+              bg="white"
+              boxShadow="0 -1px 6px rgba(0,0,0,0.1)"
+              position="sticky"
+              bottom="0"
+              left="0"
+              right="0"
+              zIndex="sticky"
+            >
+              <Link to="/">
+                <Button variant="outline" mx={2}>
+                  Awards
+                </Button>
+              </Link>
+              <Link to="/result">
+                <Button variant="outline" mx={2}>
+                  Results
+                </Button>
+              </Link>
+            </Flex>
+          </Flex>
         </Router>
       </SessionProvider>
     </ChakraProvider>

@@ -1,12 +1,4 @@
 import React, { useState, useEffect } from "react";
-import {
-  PieChart,
-  Pie,
-  Cell,
-  Tooltip,
-  Legend,
-  ResponsiveContainer,
-} from "recharts";
 import { fetchResults, fetchCategories } from "../utils/supabaseApi";
 import {
   Box,
@@ -15,8 +7,13 @@ import {
   Text,
   VStack,
   useColorModeValue,
-  useBreakpointValue,
+  SimpleGrid,
 } from "@chakra-ui/react";
+import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
+import { Doughnut } from "react-chartjs-2";
+import { FaChartPie } from "react-icons/fa";
+
+ChartJS.register(ArcElement, Tooltip, Legend);
 
 type Option = {
   option_name: string;
@@ -31,26 +28,24 @@ type CategoryResult = {
 };
 
 const COLORS = [
-  "#3182CE",
-  "#38A169",
-  "#DD6B20",
-  "#D53F8C",
-  "#805AD5",
-  "#319795",
-  "#ED8936",
-  "#4299E1",
-  "#48BB78",
-  "#F56565",
+  "rgba(255, 99, 132, 0.8)",
+  "rgba(54, 162, 235, 0.8)",
+  "rgba(255, 206, 86, 0.8)",
+  "rgba(75, 192, 192, 0.8)",
+  "rgba(153, 102, 255, 0.8)",
+  "rgba(255, 159, 64, 0.8)",
+  "rgba(199, 199, 199, 0.8)",
+  "rgba(83, 102, 255, 0.8)",
+  "rgba(40, 159, 64, 0.8)",
+  "rgba(210, 199, 199, 0.8)",
 ];
 
 const VotingResultsPieCharts: React.FC = () => {
   const [results, setResults] = useState<CategoryResult[]>([]);
   const [loading, setLoading] = useState(false);
 
-  const bgColor = useColorModeValue("gray.50", "gray.800");
+  const bgColor = useColorModeValue("white", "gray.800");
   const textColor = useColorModeValue("gray.800", "white");
-
-  const chartSize = useBreakpointValue({ base: 250, md: 400 });
 
   useEffect(() => {
     const fetchData = async () => {
@@ -116,9 +111,30 @@ const VotingResultsPieCharts: React.FC = () => {
     return processedResults;
   };
 
+  const chartOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        position: "bottom" as const,
+      },
+      tooltip: {
+        callbacks: {
+          label: (context: any) => {
+            const label = context.label || "";
+            const value = context.parsed || 0;
+            const percentage = context.dataset.data[context.dataIndex];
+            return `${label}: ${value} votes (${percentage.toFixed(1)}%)`;
+          },
+        },
+      },
+    },
+  };
+
   return (
     <Box p={4} bg={bgColor} borderRadius="lg" boxShadow="xl">
       <Heading as="h2" size="xl" mb={6} textAlign="center" color={textColor}>
+        <FaChartPie style={{ display: "inline", marginRight: "10px" }} />
         Voting Results
       </Heading>
       {loading ? (
@@ -130,7 +146,7 @@ const VotingResultsPieCharts: React.FC = () => {
           color="blue.500"
         />
       ) : results.length > 0 ? (
-        <VStack spacing={8} align="stretch">
+        <SimpleGrid columns={{ base: 1, md: 2 }} spacing={8}>
           {results.map((categoryResult) => (
             <Box
               key={categoryResult.category_id}
@@ -149,33 +165,28 @@ const VotingResultsPieCharts: React.FC = () => {
                 {categoryResult.category_name}
               </Heading>
               {categoryResult.options.length > 0 ? (
-                <ResponsiveContainer width="100%" height={chartSize}>
-                  <PieChart>
-                    <Pie
-                      data={categoryResult.options}
-                      dataKey="percentage"
-                      nameKey="option_name"
-                      cx="50%"
-                      cy="50%"
-                      outerRadius={chartSize ? chartSize / 2 - 10 : 140}
-                      labelLine={false}
-                      label={({ name, percent }) =>
-                        `${name} ${(percent * 100).toFixed(0)}%`
-                      }
-                    >
-                      {categoryResult.options.map((entry, index) => (
-                        <Cell
-                          key={`cell-${index}`}
-                          fill={COLORS[index % COLORS.length]}
-                          stroke={useColorModeValue("white", "gray.800")}
-                          strokeWidth={2}
-                        />
-                      ))}
-                    </Pie>
-                    <Tooltip />
-                    <Legend verticalAlign="bottom" height={36} />
-                  </PieChart>
-                </ResponsiveContainer>
+                <Box height="300px">
+                  <Doughnut
+                    data={{
+                      labels: categoryResult.options.map(
+                        (option) => option.option_name
+                      ),
+                      datasets: [
+                        {
+                          data: categoryResult.options.map(
+                            (option) => option.percentage
+                          ),
+                          backgroundColor: COLORS,
+                          borderColor: COLORS.map((color) =>
+                            color.replace("0.8", "1")
+                          ),
+                          borderWidth: 1,
+                        },
+                      ],
+                    }}
+                    options={chartOptions}
+                  />
+                </Box>
               ) : (
                 <Text fontSize="lg" textAlign="center" color={textColor}>
                   No options available for this category.
@@ -183,7 +194,7 @@ const VotingResultsPieCharts: React.FC = () => {
               )}
             </Box>
           ))}
-        </VStack>
+        </SimpleGrid>
       ) : (
         <Text fontSize="xl" textAlign="center" color={textColor}>
           No results found.

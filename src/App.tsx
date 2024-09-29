@@ -1,4 +1,3 @@
-import React from "react";
 import { BrowserRouter as Router, Route, Routes, Link } from "react-router-dom";
 import {
   ChakraProvider,
@@ -6,11 +5,11 @@ import {
   Flex,
   Button,
   Image,
-  Text,
   Heading,
 } from "@chakra-ui/react";
 import { SessionProvider } from "./contexts/SessionContext";
 import useSession from "./hooks/useSession";
+import { FaAward, FaChartPie } from "react-icons/fa";
 
 // Components
 import CategoryList from "./components/CategoryList";
@@ -28,15 +27,19 @@ export default function App() {
         <Router>
           <Flex flexDirection="column" minHeight="100vh">
             <Flex as="nav" p={4} alignItems="center" bg="white" boxShadow="sm">
-              <Box flex="1">
+              <Flex flex="1" alignItems="center" justifyContent={"center"}>
                 <Link to="/">
                   <Image
                     src="/optimizely-logo.png"
                     height="40px"
                     alt="Optimizely Logo"
+                    mr={4}
                   />
                 </Link>
-              </Box>
+                <Heading as="h2" size="md" fontWeight="bold">
+                  UnOptimized Awards 2024
+                </Heading>
+              </Flex>
             </Flex>
             <Box flex="1" overflowY="auto" p={4} bg="gray.100">
               <Routes>
@@ -65,12 +68,12 @@ export default function App() {
               zIndex="sticky"
             >
               <Link to="/">
-                <Button variant="outline" mx={2}>
+                <Button variant="outline" mx={2} leftIcon={<FaAward />}>
                   Awards
                 </Button>
               </Link>
               <Link to="/result">
-                <Button variant="outline" mx={2}>
+                <Button variant="outline" mx={2} leftIcon={<FaChartPie />}>
                   Results
                 </Button>
               </Link>

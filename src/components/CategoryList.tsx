@@ -92,7 +92,7 @@ const CategoryList: React.FC = () => {
   return (
     <Box p={8} borderRadius={"lg"} boxShadow="md" bg="gray.50">
       <Flex as="h1" mb={6} alignItems="center" justifyContent="center">
-        <Heading>UnOptimized Awards</Heading>
+        <Heading>Categories</Heading>
       </Flex>
       <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} spacing={4}>
         {categories.map((category) => (

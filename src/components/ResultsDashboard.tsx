@@ -1,14 +1,21 @@
 import React, { useState, useEffect } from "react";
-import { PieChart, Pie, Cell, Tooltip, Legend, Label } from "recharts";
+import {
+  PieChart,
+  Pie,
+  Cell,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
+} from "recharts";
 import { fetchResults, fetchCategories } from "../utils/supabaseApi";
 import {
   Box,
   Heading,
   Spinner,
   Text,
-  Grid,
-  GridItem,
+  VStack,
   useColorModeValue,
+  useBreakpointValue,
 } from "@chakra-ui/react";
 
 type Option = {
@@ -42,6 +49,8 @@ const VotingResultsPieCharts: React.FC = () => {
 
   const bgColor = useColorModeValue("gray.50", "gray.800");
   const textColor = useColorModeValue("gray.800", "white");
+
+  const chartSize = useBreakpointValue({ base: 250, md: 400 });
 
   useEffect(() => {
     const fetchData = async () => {
@@ -108,7 +117,7 @@ const VotingResultsPieCharts: React.FC = () => {
   };
 
   return (
-    <Box p={8} bg={bgColor} borderRadius="lg" boxShadow="xl">
+    <Box p={4} bg={bgColor} borderRadius="lg" boxShadow="xl">
       <Heading as="h2" size="xl" mb={6} textAlign="center" color={textColor}>
         Voting Results
       </Heading>
@@ -121,36 +130,38 @@ const VotingResultsPieCharts: React.FC = () => {
           color="blue.500"
         />
       ) : results.length > 0 ? (
-        <Grid templateColumns={["1fr", "1fr", "repeat(2, 1fr)"]} gap={8}>
-          {results.map((categoryResult, index) => (
-            <GridItem key={categoryResult.category_id}>
-              <Box
+        <VStack spacing={8} align="stretch">
+          {results.map((categoryResult) => (
+            <Box
+              key={categoryResult.category_id}
+              bg={useColorModeValue("white", "gray.700")}
+              p={4}
+              borderRadius="md"
+              boxShadow="md"
+            >
+              <Heading
+                as="h3"
+                size="lg"
                 mb={4}
-                bg={useColorModeValue("white", "gray.700")}
-                p={6}
-                borderRadius="md"
-                boxShadow="md"
+                textAlign="center"
+                color={textColor}
               >
-                <Heading
-                  as="h3"
-                  size="lg"
-                  mb={4}
-                  textAlign="center"
-                  color={textColor}
-                >
-                  {categoryResult.category_name}
-                </Heading>
-                {categoryResult.options.length > 0 ? (
-                  <PieChart width={400} height={400}>
+                {categoryResult.category_name}
+              </Heading>
+              {categoryResult.options.length > 0 ? (
+                <ResponsiveContainer width="100%" height={chartSize}>
+                  <PieChart>
                     <Pie
                       data={categoryResult.options}
                       dataKey="percentage"
                       nameKey="option_name"
                       cx="50%"
                       cy="50%"
-                      outerRadius={160}
-                      labelLine={true}
-                      // label={CustomLabel}
+                      outerRadius={chartSize ? chartSize / 2 - 10 : 140}
+                      labelLine={false}
+                      label={({ name, percent }) =>
+                        `${name} ${(percent * 100).toFixed(0)}%`
+                      }
                     >
                       {categoryResult.options.map((entry, index) => (
                         <Cell
@@ -162,17 +173,17 @@ const VotingResultsPieCharts: React.FC = () => {
                       ))}
                     </Pie>
                     <Tooltip />
-                    <Legend verticalAlign="top" height={36} />
+                    <Legend verticalAlign="bottom" height={36} />
                   </PieChart>
-                ) : (
-                  <Text fontSize="lg" textAlign="center" color={textColor}>
-                    No options available for this category.
-                  </Text>
-                )}
-              </Box>
-            </GridItem>
+                </ResponsiveContainer>
+              ) : (
+                <Text fontSize="lg" textAlign="center" color={textColor}>
+                  No options available for this category.
+                </Text>
+              )}
+            </Box>
           ))}
-        </Grid>
+        </VStack>
       ) : (
         <Text fontSize="xl" textAlign="center" color={textColor}>
           No results found.

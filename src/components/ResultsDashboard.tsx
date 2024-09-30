@@ -7,12 +7,14 @@ import {
   Text,
   VStack,
   useColorModeValue,
-  SimpleGrid,
+  useBreakpointValue,
   Flex,
+  Icon,
+  IconButton,
 } from "@chakra-ui/react";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import { Doughnut } from "react-chartjs-2";
-import { FaChartPie } from "react-icons/fa";
+import { PieChart, RefreshCw } from "lucide-react";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -41,32 +43,35 @@ const COLORS = [
   "rgba(210, 199, 199, 0.8)",
 ];
 
-const VotingResultsPieCharts: React.FC = () => {
+export default function ResultsDashboard() {
   const [results, setResults] = useState<CategoryResult[]>([]);
   const [loading, setLoading] = useState(false);
 
   const bgColor = useColorModeValue("white", "gray.800");
   const textColor = useColorModeValue("gray.800", "white");
 
-  useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
-      const { data: categoriesData, error: categoriesError } =
-        await fetchCategories();
-      const { data: resultsData, error: resultsError } = await fetchResults();
+  const chartSize = useBreakpointValue({ base: 250, md: 400 });
 
-      if (categoriesError || resultsError) {
-        console.error("Error fetching data:", categoriesError || resultsError);
-        setResults([]);
-      } else {
-        const processedResults = processResultsByCategory(
-          categoriesData || [],
-          resultsData || []
-        );
-        setResults(processedResults);
-      }
-      setLoading(false);
-    };
+  const fetchData = async () => {
+    setLoading(true);
+    const { data: categoriesData, error: categoriesError } =
+      await fetchCategories();
+    const { data: resultsData, error: resultsError } = await fetchResults();
+
+    if (categoriesError || resultsError) {
+      console.error("Error fetching data:", categoriesError || resultsError);
+      setResults([]);
+    } else {
+      const processedResults = processResultsByCategory(
+        categoriesData || [],
+        resultsData || []
+      );
+      setResults(processedResults);
+    }
+    setLoading(false);
+  };
+
+  useEffect(() => {
     fetchData();
   }, []);
 
@@ -132,29 +137,36 @@ const VotingResultsPieCharts: React.FC = () => {
     },
   };
 
+  const handleRefresh = () => {
+    fetchData();
+  };
+
   return (
     <Box p={4} bg={bgColor} borderRadius="lg" boxShadow="xl">
-      <Box py={12} textAlign="center">
-        <Flex alignItems="center" justifyContent="center">
-          <FaChartPie size={32} style={{ marginRight: "10px" }} />
-          <Heading as="h2" size="2xl">
-            Results
-          </Heading>
-        </Flex>
-        <Text mt={4} fontSize="lg">
-          See the latest voting results for all categories!
-        </Text>
-      </Box>
-      {loading ? (
-        <Spinner
-          size="xl"
-          thickness="4px"
-          speed="0.65s"
-          emptyColor="gray.200"
-          color="blue.500"
+      <Flex justifyContent="center" alignItems="center" mb={6} gap={"10px"}>
+        <Icon as={PieChart} boxSize={6} mr={2} />
+        <Heading as="h2" size="xl" color={textColor}>
+          Voting Results
+        </Heading>
+        <IconButton
+          aria-label="Refresh"
+          isLoading={loading}
+          onClick={handleRefresh}
+          icon={<Icon as={RefreshCw} />}
         />
+      </Flex>
+      {loading ? (
+        <Flex justifyContent="center" alignItems="center" height="200px">
+          <Spinner
+            size="xl"
+            thickness="4px"
+            speed="0.65s"
+            emptyColor="gray.200"
+            color="blue.500"
+          />
+        </Flex>
       ) : results.length > 0 ? (
-        <SimpleGrid columns={{ base: 1, md: 2 }} spacing={8}>
+        <VStack spacing={15} align="stretch">
           {results.map((categoryResult) => (
             <Box
               key={categoryResult.category_id}
@@ -173,7 +185,7 @@ const VotingResultsPieCharts: React.FC = () => {
                 {categoryResult.category_name}
               </Heading>
               {categoryResult.options.length > 0 ? (
-                <Box height="300px">
+                <Box height={chartSize}>
                   <Doughnut
                     data={{
                       labels: categoryResult.options.map(
@@ -202,7 +214,7 @@ const VotingResultsPieCharts: React.FC = () => {
               )}
             </Box>
           ))}
-        </SimpleGrid>
+        </VStack>
       ) : (
         <Text fontSize="xl" textAlign="center" color={textColor}>
           No results found.
@@ -210,6 +222,4 @@ const VotingResultsPieCharts: React.FC = () => {
       )}
     </Box>
   );
-};
-
-export default VotingResultsPieCharts;
+}

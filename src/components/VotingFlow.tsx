@@ -22,7 +22,7 @@ import {
   VStack,
   chakra,
   Container,
-  Badge,
+  AspectRatio,
 } from "@chakra-ui/react";
 import { motion, AnimatePresence, isValidMotionProp } from "framer-motion";
 import { useSwipeable } from "react-swipeable";
@@ -210,13 +210,14 @@ const VotingFlow: React.FC = () => {
           {category?.name}
         </Heading>
         <AnimatePresence mode="wait">
-          <SimpleGrid columns={2} spacing={4} px={4}>
+          <SimpleGrid columns={2} spacing={4} px={4} width="100%">
             {options.map((option) => (
               <MotionBox
                 key={option.id}
                 initial={{ opacity: 0, y: 50 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -50 }}
+                width="100%"
               >
                 <Box
                   borderWidth="1px"
@@ -236,35 +237,19 @@ const VotingFlow: React.FC = () => {
                   display="flex"
                   flexDirection="column"
                 >
-                  <Box position="relative" pb="100%">
+                  <AspectRatio ratio={1} width="100%">
                     <Image
                       src={option.image_url}
                       alt={option.name}
                       objectFit="cover"
-                      position="absolute"
-                      top="0"
-                      left="0"
                       width="100%"
                       height="100%"
                     />
-                  </Box>
+                  </AspectRatio>
                   <VStack p={4} align="start" spacing={2} flex="1">
-                    <Heading as="h3" size="sm">
+                    <Text fontWeight="bold" fontSize="sm">
                       {option.name}
-                    </Heading>
-                    <Badge
-                      colorScheme={
-                        selectedOptionId === option.id ? "blue" : "gray"
-                      }
-                      variant={
-                        selectedOptionId === option.id ? "solid" : "subtle"
-                      }
-                      fontSize="xs"
-                    >
-                      {selectedOptionId === option.id
-                        ? "Selected"
-                        : "Click to select"}
-                    </Badge>
+                    </Text>
                   </VStack>
                 </Box>
               </MotionBox>

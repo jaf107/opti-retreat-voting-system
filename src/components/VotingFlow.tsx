@@ -205,7 +205,7 @@ const VotingFlow: React.FC = () => {
 
   return (
     <Box {...handlers} position="relative" minHeight="100vh" pb="120px">
-      <Container maxW="4xl" centerContent>
+      <Container maxW="xl" centerContent>
         <Heading as="h2" size="xl" mb={8} textAlign="center">
           {category?.name}
         </Heading>
@@ -246,7 +246,12 @@ const VotingFlow: React.FC = () => {
                       height="100%"
                     />
                   </AspectRatio>
-                  <VStack p={4} align="start" spacing={2} flex="1">
+                  <VStack
+                    p={2}
+                    alignItems="center"
+                    justifyContent={"center"}
+                    flex="1"
+                  >
                     <Text fontWeight="bold" fontSize="sm">
                       {option.name}
                     </Text>

@@ -145,10 +145,10 @@ export default function ResultsDashboard() {
     <Box p={4} bg={bgColor} borderRadius="lg" boxShadow="xl">
       <Flex as="h1" mb={6} alignItems="center" justifyContent="center">
         <Box py={12} textAlign="center">
-          <Flex alignItems="center" justifyContent="center" gap={4}>
+          <Flex alignItems="center" justifyContent="center" gap={2}>
             <Icon as={PieChart} boxSize={6} mr={2} />
             <Heading as="h2" size="2xl">
-              Voting Results
+              Results
             </Heading>
             <IconButton
               aria-label="Refresh"

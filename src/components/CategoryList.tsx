@@ -94,7 +94,7 @@ const CategoryList: React.FC = () => {
     <Box p={8} borderRadius={"lg"} boxShadow="md" bg="gray.50">
       <Flex as="h1" mb={6} alignItems="center" justifyContent="center">
         <Box py={12} textAlign="center">
-          <Flex alignItems="center" justifyContent="center">
+          <Flex alignItems="center" justifyContent="center" gap={2}>
             <FaAward size={32} className="mr-2" />
             <Heading as="h2" size="2xl">
               Categories

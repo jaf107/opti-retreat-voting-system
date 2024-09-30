@@ -3,6 +3,7 @@ import {
   Box,
   Button,
   Container,
+  Flex,
   Heading,
   SimpleGrid,
   Text,
@@ -63,11 +64,15 @@ const AdminDashboard: React.FC = () => {
   };
   return (
     <Container maxW="container.xl" py={8}>
-      <Heading as="h1" size="2xl" mb={8}>
-        Admin Dashboard
-      </Heading>
-      <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} spacing={6}>
-        <Box p={6} borderWidth={1} borderRadius="lg">
+      <Flex
+        flexDirection={"column"}
+        alignItems={"center"}
+        justifyContent={"center"}
+      >
+        <Heading as="h1" size="xl" mb={8}>
+          Admin Dashboard
+        </Heading>
+        <Box p={10} borderWidth={1} borderRadius="lg">
           <VStack spacing={4} align="stretch">
             <Heading size="md">Voting Status</Heading>
             <Text>
@@ -81,23 +86,7 @@ const AdminDashboard: React.FC = () => {
             </Button>
           </VStack>
         </Box>
-        <Box p={6} borderWidth={1} borderRadius="lg">
-          <VStack spacing={4} align="stretch">
-            <Heading size="md">Results Dashboard</Heading>
-            <Button as={Link} to="/results" colorScheme="blue">
-              View Results
-            </Button>
-          </VStack>
-        </Box>
-        <Box p={6} borderWidth={1} borderRadius="lg">
-          <VStack spacing={4} align="stretch">
-            <Heading size="md">Manage Categories</Heading>
-            <Button as={Link} to="/categories" colorScheme="blue">
-              Manage Categories
-            </Button>
-          </VStack>
-        </Box>
-      </SimpleGrid>
+      </Flex>
     </Container>
   );
 };

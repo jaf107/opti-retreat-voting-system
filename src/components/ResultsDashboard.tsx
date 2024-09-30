@@ -14,7 +14,7 @@ import {
 } from "@chakra-ui/react";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import { Doughnut } from "react-chartjs-2";
-import { PieChart, RefreshCw } from "lucide-react";
+import { PieChart, RefreshCw, SeparatorHorizontal } from "lucide-react";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -143,17 +143,24 @@ export default function ResultsDashboard() {
 
   return (
     <Box p={4} bg={bgColor} borderRadius="lg" boxShadow="xl">
-      <Flex justifyContent="center" alignItems="center" mb={6} gap={"10px"}>
-        <Icon as={PieChart} boxSize={6} mr={2} />
-        <Heading as="h2" size="xl" color={textColor}>
-          Voting Results
-        </Heading>
-        <IconButton
-          aria-label="Refresh"
-          isLoading={loading}
-          onClick={handleRefresh}
-          icon={<Icon as={RefreshCw} />}
-        />
+      <Flex as="h1" mb={6} alignItems="center" justifyContent="center">
+        <Box py={12} textAlign="center">
+          <Flex alignItems="center" justifyContent="center" gap={4}>
+            <Icon as={PieChart} boxSize={6} mr={2} />
+            <Heading as="h2" size="2xl">
+              Voting Results
+            </Heading>
+            <IconButton
+              aria-label="Refresh"
+              isLoading={loading}
+              onClick={handleRefresh}
+              icon={<Icon as={RefreshCw} />}
+            />
+          </Flex>
+          <Text mt={4} fontSize="lg">
+            See the latest voting results for all our Categories{" "}
+          </Text>
+        </Box>
       </Flex>
       {loading ? (
         <Flex justifyContent="center" alignItems="center" height="200px">

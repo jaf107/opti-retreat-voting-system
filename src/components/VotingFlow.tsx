@@ -225,7 +225,11 @@ const VotingFlow: React.FC = () => {
                   cursor="pointer"
                   onClick={() => handleSelectOption(option.id)}
                   bg={selectedOptionId === option.id ? "blue.50" : "white"}
-                  boxShadow="lg"
+                  boxShadow={
+                    selectedOptionId === option.id
+                      ? "0 0 0 3px rgba(66, 153, 225, 0.6)"
+                      : "lg"
+                  }
                   transition="all 0.3s"
                   _hover={{ transform: "translateY(-5px)" }}
                   height="100%"
@@ -252,7 +256,9 @@ const VotingFlow: React.FC = () => {
                       colorScheme={
                         selectedOptionId === option.id ? "blue" : "gray"
                       }
-                      variant="subtle"
+                      variant={
+                        selectedOptionId === option.id ? "solid" : "subtle"
+                      }
                       fontSize="xs"
                     >
                       {selectedOptionId === option.id
@@ -274,6 +280,8 @@ const VotingFlow: React.FC = () => {
         justifyContent="space-between"
         alignItems="center"
         p={4}
+        bg="white"
+        boxShadow="0 -4px 6px -1px rgba(0, 0, 0, 0.1)"
         zIndex={10}
       >
         <Button

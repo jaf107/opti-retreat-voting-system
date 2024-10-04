@@ -19,6 +19,8 @@ import { FaAward } from "react-icons/fa";
 const Homepage: React.FC = () => {
   const [appStatus, setAppStatus] = useState<boolean | null>(null);
   const [firstCategoryId, setFirstCategoryId] = useState<string | null>(null);
+  const [firstCategoryStatus, setFirstCategoryStatus] =
+    useState<boolean>(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -47,6 +49,7 @@ const Homepage: React.FC = () => {
         throw new Error("Error fetching first category");
       }
       setFirstCategoryId(data?.id || null);
+      setFirstCategoryStatus(data?.status || false);
     } catch (error) {
       console.error("Error loading first category:", error);
     }
@@ -125,11 +128,13 @@ const Homepage: React.FC = () => {
           colorScheme="blue"
           size="lg"
           leftIcon={<FaAward />}
-          isDisabled={!firstCategoryId}
+          isDisabled={!firstCategoryStatus}
         >
           Start Voting
         </Button>
-        <Text>Click the button above to start voting.</Text>
+        <Text textAlign={"center"}>
+          Click the button above to start voting.
+        </Text>
       </VStack>
     </Box>
   );

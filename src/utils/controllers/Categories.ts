@@ -1,4 +1,5 @@
 import { CATEGORIES } from "../../constants/db.names";
+import { Category } from "../../models/Category";
 import { supabase } from "../supabaseClient";
 
 export const fetchCategories = async () => {
@@ -12,7 +13,7 @@ export const fetchCategories = async () => {
 export const fetchFirstCategory = async () => {
   const { data, error } = await supabase
     .from(CATEGORIES)
-    .select("id")
+    .select("*")
     .order("order_index", { ascending: true })
     .limit(1)
     .single();

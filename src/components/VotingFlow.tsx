@@ -277,7 +277,7 @@ const VotingFlow: React.FC = () => {
         </Button>
         <Button
           onClick={handleNext}
-          isDisabled={!nextCategoryStatus}
+          isDisabled={!nextCategoryStatus && !!nextCategoryId}
           rightIcon={<ChevronRightIcon />}
           variant="outline"
           size="sm"

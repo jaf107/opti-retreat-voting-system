@@ -24,7 +24,6 @@ import {
   AspectRatio,
 } from "@chakra-ui/react";
 import { motion, AnimatePresence, isValidMotionProp } from "framer-motion";
-import { useSwipeable } from "react-swipeable";
 import { ChevronLeftIcon, ChevronRightIcon } from "@chakra-ui/icons";
 import { Category } from "../models/Category";
 import { Choice } from "../models/Choice";
@@ -186,18 +185,12 @@ const VotingFlow: React.FC = () => {
     }
   };
 
-  const handlers = useSwipeable({
-    onSwipedLeft: handleNext,
-    onSwipedRight: handlePrevious,
-    trackMouse: true,
-  });
-
   if (!category) {
     return <Box>Loading...</Box>;
   }
 
   return (
-    <Box {...handlers} position="relative" minHeight="100vh" pb="120px">
+    <Box position="relative" minHeight="100vh" pb="120px">
       <Container maxW="xl" centerContent>
         <Heading as="h2" size="xl" mb={8} textAlign="center">
           {category?.name}

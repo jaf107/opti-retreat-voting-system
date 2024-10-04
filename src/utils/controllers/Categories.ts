@@ -54,3 +54,13 @@ export const fetchCategory = async (categoryId: string) => {
 
   return { data, error };
 };
+
+export const updateCategoryStatus = async (
+  categoryId: string,
+  status: boolean
+) => {
+  return await supabase
+    .from(CATEGORIES)
+    .update({ status })
+    .eq("id", categoryId);
+};

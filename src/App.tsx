@@ -15,6 +15,7 @@ import CategoryList from "./components/CategoryList";
 import VotingFlow from "./components/VotingFlow";
 import ResultsDashboard from "./components/ResultsDashboard";
 import AdminDashboard from "./components/AdminDashboard";
+import CategoryManagement from "./components/CategoryManagement";
 
 export default function App() {
   const session = useSession();
@@ -45,6 +46,10 @@ export default function App() {
                 <Route path="/vote/:categoryId" element={<VotingFlow />} />
                 <Route path="/result" element={<ResultsDashboard />} />
                 <Route path="/admin" element={<AdminDashboard />} />
+                <Route
+                  path="/admin/categories"
+                  element={<CategoryManagement />}
+                />
               </Routes>
             </Box>
             <Flex

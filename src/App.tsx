@@ -14,8 +14,8 @@ import { FaAward, FaChartPie } from "react-icons/fa";
 import CategoryList from "./components/CategoryList";
 import VotingFlow from "./components/VotingFlow";
 import ResultsDashboard from "./components/ResultsDashboard";
-import AdminDashboard from "./components/AdminDashboard";
-import CategoryManagement from "./components/CategoryManagement";
+import AdminDashboard from "./components/admin/AdminDashboard";
+import CategoryManagement from "./components/admin/CategoryManagement";
 
 export default function App() {
   const session = useSession();

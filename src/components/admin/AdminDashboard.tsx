@@ -11,7 +11,10 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
-import { getAppStatus, toggleAppStatus } from "../utils/controllers/AppStatus";
+import {
+  getAppStatus,
+  toggleAppStatus,
+} from "../../utils/controllers/AppStatus";
 import CategoryManagement from "./CategoryManagement";
 
 const AdminDashboard: React.FC = () => {

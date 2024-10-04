@@ -13,8 +13,8 @@ import {
 import {
   fetchCategories,
   updateCategoryStatus,
-} from "../utils/controllers/Categories";
-import { Category } from "../models/Category";
+} from "../../utils/controllers/Categories";
+import { Category } from "../../models/Category";
 
 const CategoryManagement: React.FC = () => {
   const [categories, setCategories] = useState<Category[]>([]);

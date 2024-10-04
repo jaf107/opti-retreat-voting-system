@@ -52,29 +52,6 @@ export default function App() {
                 />
               </Routes>
             </Box>
-            <Flex
-              as="footer"
-              justifyContent="center"
-              p={4}
-              bg="white"
-              boxShadow="0 -1px 6px rgba(0,0,0,0.1)"
-              position="sticky"
-              bottom="0"
-              left="0"
-              right="0"
-              zIndex="sticky"
-            >
-              <Link to="/">
-                <Button variant="outline" mx={2} leftIcon={<FaAward />}>
-                  Awards
-                </Button>
-              </Link>
-              <Link to="/result">
-                <Button variant="outline" mx={2} leftIcon={<FaChartPie />}>
-                  Results
-                </Button>
-              </Link>
-            </Flex>
           </Flex>
         </Router>
       </SessionProvider>

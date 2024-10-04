@@ -98,7 +98,7 @@ export const fetchCategory = async (categoryId: string) => {
   return { data, error };
 };
 
-export const fetchPollOptions = async (categoryId: string) => {
+export const fetchChoices = async (categoryId: string) => {
   try {
     const { data, error } = await supabase
       .from(CHOICES)
@@ -106,7 +106,7 @@ export const fetchPollOptions = async (categoryId: string) => {
       .eq("category_id", categoryId);
 
     if (error) {
-      throw new Error(`Error fetching poll options: ${error.message}`);
+      throw new Error(`Error fetching poll choices: ${error.message}`);
     }
 
     return { data, error: null };
@@ -141,13 +141,13 @@ export const checkIfUserHasVoted = async (
 export const submitVote = async (
   sessionId: string,
   categoryId: string,
-  optionId: string
+  choiceId: string
 ) => {
   try {
     const { data, error } = await supabase.from(VOTES).upsert({
       session_id: sessionId,
       category_id: categoryId,
-      option_id: optionId,
+      choice_id: choiceId,
     });
 
     if (error) {
@@ -177,11 +177,11 @@ export const fetchResults = async () => {
 export const updateVote = async (
   sessionId: string,
   categoryId: string,
-  optionId: string
+  choiceId: string
 ) => {
   const { data, error } = await supabase
     .from(VOTES)
-    .update({ option_id: optionId })
+    .update({ choice_id: choiceId })
     .match({ session_id: sessionId, category_id: categoryId });
 
   return { data, error };

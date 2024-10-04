@@ -11,7 +11,7 @@ import { SessionProvider } from "./contexts/SessionContext";
 import useSession from "./hooks/useSession";
 import { FaAward, FaChartPie } from "react-icons/fa";
 
-import CategoryList from "./components/CategoryList";
+import Homepage from "./components/Homepage";
 import VotingFlow from "./components/VotingFlow";
 import ResultsDashboard from "./components/ResultsDashboard";
 import AdminDashboard from "./components/admin/AdminDashboard";
@@ -42,9 +42,9 @@ export default function App() {
             </Flex>
             <Box flex="1" overflowY="auto" p={4} bg="gray.100">
               <Routes>
-                <Route path="/" element={<CategoryList />} />
+                <Route path="/" element={<Homepage />} />
                 <Route path="/vote/:categoryId" element={<VotingFlow />} />
-                <Route path="/result" element={<ResultsDashboard />} />
+                <Route path="/admin/result" element={<ResultsDashboard />} />
                 <Route path="/admin" element={<AdminDashboard />} />
                 <Route
                   path="/admin/categories"
@@ -52,29 +52,6 @@ export default function App() {
                 />
               </Routes>
             </Box>
-            <Flex
-              as="footer"
-              justifyContent="center"
-              p={4}
-              bg="white"
-              boxShadow="0 -1px 6px rgba(0,0,0,0.1)"
-              position="sticky"
-              bottom="0"
-              left="0"
-              right="0"
-              zIndex="sticky"
-            >
-              <Link to="/">
-                <Button variant="outline" mx={2} leftIcon={<FaAward />}>
-                  Awards
-                </Button>
-              </Link>
-              <Link to="/result">
-                <Button variant="outline" mx={2} leftIcon={<FaChartPie />}>
-                  Results
-                </Button>
-              </Link>
-            </Flex>
           </Flex>
         </Router>
       </SessionProvider>

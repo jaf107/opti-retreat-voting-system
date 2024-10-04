@@ -253,7 +253,7 @@ const VotingFlow: React.FC = () => {
       </Container>
       <Flex
         position="fixed"
-        bottom="70px"
+        bottom="0"
         left="0"
         right="0"
         justifyContent="space-between"

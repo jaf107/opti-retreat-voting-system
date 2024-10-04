@@ -15,11 +15,7 @@ import {
 } from "@chakra-ui/react";
 import { fetchCategories, getAppStatus } from "../utils/supabaseApi";
 import { FaAward } from "react-icons/fa";
-
-type Category = {
-  id: string;
-  name: string;
-};
+import { Category } from "../models/Category";
 
 const CategoryList: React.FC = () => {
   const [categories, setCategories] = useState<Category[]>([]);

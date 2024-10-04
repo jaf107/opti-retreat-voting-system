@@ -27,17 +27,8 @@ import {
 import { motion, AnimatePresence, isValidMotionProp } from "framer-motion";
 import { useSwipeable } from "react-swipeable";
 import { ChevronLeftIcon, ChevronRightIcon } from "@chakra-ui/icons";
-
-type Category = {
-  id: string;
-  name: string;
-};
-
-type Option = {
-  id: string;
-  name: string;
-  image_src: string;
-};
+import { Category } from "../models/Category";
+import { Choice } from "../models/Choice";
 
 const MotionBox = chakra(motion.div, {
   shouldForwardProp: (prop) => isValidMotionProp(prop) || prop === "children",
@@ -46,7 +37,7 @@ const MotionBox = chakra(motion.div, {
 const VotingFlow: React.FC = () => {
   const { categoryId } = useParams<{ categoryId: string }>();
   const [category, setCategory] = useState<Category | null>(null);
-  const [options, setOptions] = useState<Option[]>([]);
+  const [options, setOptions] = useState<Choice[]>([]);
   const [selectedOptionId, setSelectedOptionId] = useState<string | null>(null);
   const [votedOptionId, setVotedOptionId] = useState<string | null>(null);
   const [nextCategoryId, setNextCategoryId] = useState<string | null>(null);

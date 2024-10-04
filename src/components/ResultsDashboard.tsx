@@ -15,20 +15,10 @@ import {
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import { Doughnut } from "react-chartjs-2";
 import { PieChart, RefreshCw, SeparatorHorizontal } from "lucide-react";
+import { ChoiceResult } from "../models/Choice";
+import { CategoryResult } from "../models/Category";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
-
-type Option = {
-  option_name: string;
-  votes: number;
-  percentage: number;
-};
-
-type CategoryResult = {
-  category_id: string;
-  category_name: string;
-  options: Option[];
-};
 
 const COLORS = [
   "rgba(255, 99, 132, 0.8)",
@@ -79,7 +69,7 @@ export default function ResultsDashboard() {
     categories: any[],
     results: any[]
   ): CategoryResult[] => {
-    const categoryMap = new Map<string, Option[]>();
+    const categoryMap = new Map<string, ChoiceResult[]>();
 
     categories.forEach((category) => {
       categoryMap.set(category.id, []);
@@ -88,7 +78,7 @@ export default function ResultsDashboard() {
     results.forEach((item) => {
       const options = categoryMap.get(item.category_id) || [];
       options.push({
-        option_name: item.option_name,
+        choice_name: item.option_name,
         votes: item.votes,
         percentage: 0,
       });
@@ -196,7 +186,7 @@ export default function ResultsDashboard() {
                   <Doughnut
                     data={{
                       labels: categoryResult.options.map(
-                        (option) => option.option_name
+                        (option) => option.choice_name
                       ),
                       datasets: [
                         {

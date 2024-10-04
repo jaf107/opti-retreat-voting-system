@@ -36,6 +36,7 @@ const AdminDashboard: React.FC = () => {
         description: error instanceof Error ? error.message : "Unknown error",
         status: "error",
         duration: 3000,
+        position: "top",
         isClosable: true,
       });
     }
@@ -51,6 +52,7 @@ const AdminDashboard: React.FC = () => {
         status: "success",
         duration: 3000,
         isClosable: true,
+        position: "top",
       });
     } catch (error) {
       toast({
@@ -59,6 +61,7 @@ const AdminDashboard: React.FC = () => {
         status: "error",
         duration: 3000,
         isClosable: true,
+        position: "top",
       });
     }
   };

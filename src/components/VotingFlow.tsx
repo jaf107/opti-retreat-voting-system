@@ -122,6 +122,7 @@ const VotingFlow: React.FC = () => {
         status: "warning",
         duration: 3000,
         isClosable: true,
+        position: "top",
       });
       return;
     }
@@ -153,6 +154,7 @@ const VotingFlow: React.FC = () => {
         status: "success",
         duration: 3000,
         isClosable: true,
+        position: "top",
       });
       setHasVoted(true);
       setVotedChoiceId(selectedChoiceId);
@@ -163,6 +165,7 @@ const VotingFlow: React.FC = () => {
         status: "error",
         duration: 3000,
         isClosable: true,
+        position: "top",
       });
     }
   };

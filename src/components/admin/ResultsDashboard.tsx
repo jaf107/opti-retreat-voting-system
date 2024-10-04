@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { fetchResults } from "../utils/controllers/Results";
-import { fetchCategories } from "../utils/controllers/Categories";
+import { fetchResults } from "../../utils/controllers/Results";
+import { fetchCategories } from "../../utils/controllers/Categories";
 import {
   Box,
   Heading,
@@ -16,8 +16,8 @@ import {
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import { Doughnut } from "react-chartjs-2";
 import { PieChart, RefreshCw, SeparatorHorizontal } from "lucide-react";
-import { ChoiceResult } from "../models/Choice";
-import { CategoryResult } from "../models/Category";
+import { ChoiceResult } from "../../models/Choice";
+import { CategoryResult } from "../../models/Category";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 

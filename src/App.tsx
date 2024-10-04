@@ -9,13 +9,10 @@ import {
 } from "@chakra-ui/react";
 import { SessionProvider } from "./contexts/SessionContext";
 import useSession from "./hooks/useSession";
-import { FaAward, FaChartPie } from "react-icons/fa";
 
 import Homepage from "./components/Homepage";
 import VotingFlow from "./components/VotingFlow";
-import ResultsDashboard from "./components/ResultsDashboard";
 import AdminDashboard from "./components/admin/AdminDashboard";
-import CategoryManagement from "./components/admin/CategoryManagement";
 
 export default function App() {
   const session = useSession();
@@ -44,12 +41,7 @@ export default function App() {
               <Routes>
                 <Route path="/" element={<Homepage />} />
                 <Route path="/vote/:categoryId" element={<VotingFlow />} />
-                <Route path="/admin/result" element={<ResultsDashboard />} />
-                <Route path="/admin" element={<AdminDashboard />} />
-                <Route
-                  path="/admin/categories"
-                  element={<CategoryManagement />}
-                />
+                <Route path="/admin/*" element={<AdminDashboard />} />
               </Routes>
             </Box>
           </Flex>

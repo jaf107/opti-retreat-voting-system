@@ -2,7 +2,10 @@ import { CATEGORIES } from "../../constants/db.names";
 import { supabase } from "../supabaseClient";
 
 export const fetchCategories = async () => {
-  const { data, error } = await supabase.from(CATEGORIES).select("*");
+  const { data, error } = await supabase
+    .from(CATEGORIES)
+    .select("*")
+    .order("order_index", { ascending: true });
   return { data, error };
 };
 

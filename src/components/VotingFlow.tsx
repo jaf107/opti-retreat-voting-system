@@ -39,6 +39,10 @@ const VotingFlow: React.FC = () => {
   const [selectedChoiceId, setSelectedChoiceId] = useState<string | null>(null);
   const [votedChoiceId, setVotedChoiceId] = useState<string | null>(null);
   const [nextCategoryId, setNextCategoryId] = useState<string | null>(null);
+  const [nextCategoryIdStatus, setNextCategoryIdStatus] =
+    useState<boolean>(false);
+  const [previousCategoryIdStatus, setPreviousCategoryIdStatus] =
+    useState<boolean>(false);
   const [previousCategoryId, setPreviousCategoryId] = useState<string | null>(
     null
   );
@@ -87,6 +91,8 @@ const VotingFlow: React.FC = () => {
         const { data: previousCategory } = await getPreviousCategory(
           categoryId
         );
+        setNextCategoryIdStatus(nextCategory?.status || true);
+        setPreviousCategoryIdStatus(previousCategory?.status || true);
         setNextCategoryId(nextCategory?.id || null);
         setPreviousCategoryId(previousCategory?.id || null);
       }
@@ -195,6 +201,7 @@ const VotingFlow: React.FC = () => {
         <Heading as="h2" size="xl" mb={8} textAlign="center">
           {category?.name}
         </Heading>
+        {/* <Text>{String(category?.status)}</Text> */}
         <AnimatePresence mode="wait">
           <SimpleGrid columns={2} spacing={4} px={4} width="100%">
             {choices.map((choice) => (
@@ -262,7 +269,7 @@ const VotingFlow: React.FC = () => {
       >
         <Button
           onClick={handlePrevious}
-          disabled={!previousCategoryId}
+          disabled={previousCategoryIdStatus}
           leftIcon={<ChevronLeftIcon />}
           variant="outline"
           size="sm"
@@ -284,6 +291,7 @@ const VotingFlow: React.FC = () => {
           onClick={handleNext}
           rightIcon={<ChevronRightIcon />}
           variant="outline"
+          disabled={nextCategoryIdStatus}
           size="sm"
         >
           {nextCategoryId ? "Next" : "Finish"}

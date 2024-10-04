@@ -44,7 +44,7 @@ export default function App() {
               <Routes>
                 <Route path="/" element={<Homepage />} />
                 <Route path="/vote/:categoryId" element={<VotingFlow />} />
-                <Route path="/result" element={<ResultsDashboard />} />
+                <Route path="/admin/result" element={<ResultsDashboard />} />
                 <Route path="/admin" element={<AdminDashboard />} />
                 <Route
                   path="/admin/categories"

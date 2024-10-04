@@ -13,27 +13,19 @@ import {
   Button,
   Flex,
   Heading,
-  Image,
   SimpleGrid,
   useToast,
-  Text,
-  VStack,
-  chakra,
   Container,
-  AspectRatio,
 } from "@chakra-ui/react";
-import { motion, AnimatePresence, isValidMotionProp } from "framer-motion";
+import { AnimatePresence } from "framer-motion";
 import { ChevronRightIcon } from "@chakra-ui/icons";
-import { Category } from "../models/Category";
+import { Category as CategoryType } from "../models/Category";
 import { Choice } from "../models/Choice";
-
-const MotionBox = chakra(motion.div, {
-  shouldForwardProp: (prop) => isValidMotionProp(prop) || prop === "children",
-});
+import Category from "./Category";
 
 const VotingFlow: React.FC = () => {
   const { categoryId } = useParams<{ categoryId: string }>();
-  const [category, setCategory] = useState<Category | null>(null);
+  const [category, setCategory] = useState<CategoryType | null>(null);
   const [choices, setChoices] = useState<Choice[]>([]);
   const [selectedChoiceId, setSelectedChoiceId] = useState<string | null>(null);
   const [votedChoiceId, setVotedChoiceId] = useState<string | null>(null);
@@ -201,52 +193,12 @@ const VotingFlow: React.FC = () => {
         <AnimatePresence mode="wait">
           <SimpleGrid columns={2} spacing={4} px={4} width="100%">
             {choices.map((choice) => (
-              <MotionBox
+              <Category
                 key={choice.id}
-                initial={{ opacity: 0, y: 50 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -50 }}
-                width="100%"
-              >
-                <Box
-                  borderWidth="1px"
-                  borderRadius="xl"
-                  overflow="hidden"
-                  cursor="pointer"
-                  onClick={() => handleSelectChoice(choice.id)}
-                  bg={selectedChoiceId === choice.id ? "blue.50" : "white"}
-                  boxShadow={
-                    selectedChoiceId === choice.id
-                      ? "0 0 0 3px rgba(66, 153, 225, 0.6)"
-                      : "lg"
-                  }
-                  transition="all 0.3s"
-                  _hover={{ transform: "translateY(-5px)" }}
-                  height="100%"
-                  display="flex"
-                  flexDirection="column"
-                >
-                  <AspectRatio ratio={1} width="100%">
-                    <Image
-                      src={choice.image_src}
-                      alt={choice.name}
-                      objectFit="cover"
-                      width="100%"
-                      height="100%"
-                    />
-                  </AspectRatio>
-                  <VStack
-                    p={2}
-                    alignItems="center"
-                    justifyContent="center"
-                    flex="1"
-                  >
-                    <Text fontWeight="bold" fontSize="sm">
-                      {choice.name}
-                    </Text>
-                  </VStack>
-                </Box>
-              </MotionBox>
+                choice={choice}
+                isSelected={selectedChoiceId === choice.id}
+                onSelect={handleSelectChoice}
+              />
             ))}
           </SimpleGrid>
         </AnimatePresence>

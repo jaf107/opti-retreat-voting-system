@@ -6,14 +6,6 @@ export const fetchCategories = async () => {
   return { data, error };
 };
 
-export const fetchCategoriesInOrder = async () => {
-  const { data, error } = await supabase
-    .from(CATEGORIES)
-    .select("*")
-    .order("order_index", { ascending: true });
-  return { data, error };
-};
-
 export const getNextCategory = async (currentCategoryId: string) => {
   const { data: currentCategory, error: currentError } = await supabase
     .from(CATEGORIES)

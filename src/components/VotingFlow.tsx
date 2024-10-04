@@ -1,15 +1,14 @@
 import React, { useEffect, useState, useContext } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { SessionContext } from "../contexts/SessionContext";
+import { updateVote } from "../utils/supabaseApi";
+import { fetchChoices } from "../utils/controllers/Choices";
+import { submitVote, checkIfUserHasVoted } from "../utils/controllers/Votes";
 import {
   fetchCategory,
-  fetchPollOptions,
-  submitVote,
-  checkIfUserHasVoted,
-  updateVote,
   getNextCategory,
   getPreviousCategory,
-} from "../utils/supabaseApi";
+} from "../utils/controllers/Categories";
 import {
   Box,
   Button,
@@ -27,17 +26,8 @@ import {
 import { motion, AnimatePresence, isValidMotionProp } from "framer-motion";
 import { useSwipeable } from "react-swipeable";
 import { ChevronLeftIcon, ChevronRightIcon } from "@chakra-ui/icons";
-
-type Category = {
-  id: string;
-  name: string;
-};
-
-type Option = {
-  id: string;
-  name: string;
-  image_url: string;
-};
+import { Category } from "../models/Category";
+import { Choice } from "../models/Choice";
 
 const MotionBox = chakra(motion.div, {
   shouldForwardProp: (prop) => isValidMotionProp(prop) || prop === "children",
@@ -46,9 +36,9 @@ const MotionBox = chakra(motion.div, {
 const VotingFlow: React.FC = () => {
   const { categoryId } = useParams<{ categoryId: string }>();
   const [category, setCategory] = useState<Category | null>(null);
-  const [options, setOptions] = useState<Option[]>([]);
-  const [selectedOptionId, setSelectedOptionId] = useState<string | null>(null);
-  const [votedOptionId, setVotedOptionId] = useState<string | null>(null);
+  const [choices, setChoices] = useState<Choice[]>([]);
+  const [selectedChoiceId, setSelectedChoiceId] = useState<string | null>(null);
+  const [votedChoiceId, setVotedChoiceId] = useState<string | null>(null);
   const [nextCategoryId, setNextCategoryId] = useState<string | null>(null);
   const [previousCategoryId, setPreviousCategoryId] = useState<string | null>(
     null
@@ -77,18 +67,18 @@ const VotingFlow: React.FC = () => {
   }, [categoryId]);
 
   useEffect(() => {
-    const loadOptions = async () => {
+    const loadChoices = async () => {
       if (categoryId) {
-        const { data, error } = await fetchPollOptions(categoryId);
+        const { data, error } = await fetchChoices(categoryId);
         if (error) {
-          console.error("Error fetching options:", error);
+          console.error("Error fetching choices:", error);
         } else {
-          setOptions(data || []);
+          setChoices(data || []);
         }
         checkIfVoted(categoryId);
       }
     };
-    loadOptions();
+    loadChoices();
   }, [categoryId]);
 
   useEffect(() => {
@@ -112,37 +102,38 @@ const VotingFlow: React.FC = () => {
     );
     if (!error && data?.length !== undefined && data.length > 0) {
       setHasVoted(true);
-      setSelectedOptionId(data[0].option_id);
-      setVotedOptionId(data[0].option_id);
+      setSelectedChoiceId(data[0].choice_id);
+      setVotedChoiceId(data[0].choice_id);
     } else {
       setHasVoted(false);
-      setSelectedOptionId(null);
-      setVotedOptionId(null);
+      setSelectedChoiceId(null);
+      setVotedChoiceId(null);
     }
   };
 
-  const handleSelectOption = (optionId: string) => {
-    setSelectedOptionId(optionId);
+  const handleSelectChoice = (choiceId: string) => {
+    setSelectedChoiceId(choiceId);
   };
 
   const handleSubmit = async () => {
-    if (!selectedOptionId) {
+    if (!selectedChoiceId) {
       toast({
         title: "Please select an option",
         status: "warning",
         duration: 3000,
         isClosable: true,
+        position: "top",
       });
       return;
     }
 
     let error;
     if (hasVoted) {
-      if (selectedOptionId !== votedOptionId) {
+      if (selectedChoiceId !== votedChoiceId) {
         ({ error } = await updateVote(
           sessionId || "",
           categoryId || "",
-          selectedOptionId
+          selectedChoiceId
         ));
       } else {
         return;
@@ -151,7 +142,7 @@ const VotingFlow: React.FC = () => {
       ({ error } = await submitVote(
         sessionId || "",
         categoryId || "",
-        selectedOptionId
+        selectedChoiceId
       ));
     }
 
@@ -163,9 +154,10 @@ const VotingFlow: React.FC = () => {
         status: "success",
         duration: 3000,
         isClosable: true,
+        position: "top",
       });
       setHasVoted(true);
-      setVotedOptionId(selectedOptionId);
+      setVotedChoiceId(selectedChoiceId);
     } else {
       toast({
         title: hasVoted ? "Error updating vote" : "Error submitting vote",
@@ -173,6 +165,7 @@ const VotingFlow: React.FC = () => {
         status: "error",
         duration: 3000,
         isClosable: true,
+        position: "top",
       });
     }
   };
@@ -211,9 +204,9 @@ const VotingFlow: React.FC = () => {
         </Heading>
         <AnimatePresence mode="wait">
           <SimpleGrid columns={2} spacing={4} px={4} width="100%">
-            {options.map((option) => (
+            {choices.map((choice) => (
               <MotionBox
-                key={option.id}
+                key={choice.id}
                 initial={{ opacity: 0, y: 50 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -50 }}
@@ -224,10 +217,10 @@ const VotingFlow: React.FC = () => {
                   borderRadius="xl"
                   overflow="hidden"
                   cursor="pointer"
-                  onClick={() => handleSelectOption(option.id)}
-                  bg={selectedOptionId === option.id ? "blue.50" : "white"}
+                  onClick={() => handleSelectChoice(choice.id)}
+                  bg={selectedChoiceId === choice.id ? "blue.50" : "white"}
                   boxShadow={
-                    selectedOptionId === option.id
+                    selectedChoiceId === choice.id
                       ? "0 0 0 3px rgba(66, 153, 225, 0.6)"
                       : "lg"
                   }
@@ -239,8 +232,8 @@ const VotingFlow: React.FC = () => {
                 >
                   <AspectRatio ratio={1} width="100%">
                     <Image
-                      src={option.image_url}
-                      alt={option.name}
+                      src={choice.image_src}
+                      alt={choice.name}
                       objectFit="cover"
                       width="100%"
                       height="100%"
@@ -253,7 +246,7 @@ const VotingFlow: React.FC = () => {
                     flex="1"
                   >
                     <Text fontWeight="bold" fontSize="sm">
-                      {option.name}
+                      {choice.name}
                     </Text>
                   </VStack>
                 </Box>
@@ -287,8 +280,8 @@ const VotingFlow: React.FC = () => {
           onClick={handleSubmit}
           colorScheme="blue"
           isDisabled={
-            !selectedOptionId ||
-            (hasVoted && selectedOptionId === votedOptionId)
+            !selectedChoiceId ||
+            (hasVoted && selectedChoiceId === votedChoiceId)
           }
           size="sm"
         >

@@ -11,7 +11,7 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
-import { getAppStatus, toggleAppStatus } from "../utils/supabaseApi";
+import { getAppStatus, toggleAppStatus } from "../utils/controllers/AppStatus";
 
 const AdminDashboard: React.FC = () => {
   const [isVotingEnabled, setIsVotingEnabled] = useState<boolean>(false);
@@ -36,6 +36,7 @@ const AdminDashboard: React.FC = () => {
         description: error instanceof Error ? error.message : "Unknown error",
         status: "error",
         duration: 3000,
+        position: "top",
         isClosable: true,
       });
     }
@@ -51,6 +52,7 @@ const AdminDashboard: React.FC = () => {
         status: "success",
         duration: 3000,
         isClosable: true,
+        position: "top",
       });
     } catch (error) {
       toast({
@@ -59,6 +61,7 @@ const AdminDashboard: React.FC = () => {
         status: "error",
         duration: 3000,
         isClosable: true,
+        position: "top",
       });
     }
   };

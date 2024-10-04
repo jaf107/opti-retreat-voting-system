@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import {
   Box,
   Button,
@@ -7,31 +7,23 @@ import {
   CardBody,
   CardHeader,
   Heading,
-  Image,
-  SimpleGrid,
   Spinner,
   Text,
   Flex,
+  VStack,
 } from "@chakra-ui/react";
-import { fetchCategories } from "../utils/controllers/Categories";
 import { getAppStatus } from "../utils/controllers/AppStatus";
+import { fetchFirstCategory } from "../utils/controllers/Categories";
 import { FaAward } from "react-icons/fa";
-import { Category } from "../models/Category";
 
 const CategoryList: React.FC = () => {
-  const [categories, setCategories] = useState<Category[]>([]);
   const [appStatus, setAppStatus] = useState<boolean | null>(null);
+  const [firstCategoryId, setFirstCategoryId] = useState<string | null>(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    const loadCategories = async () => {
-      const { data, error } = await fetchCategories();
-      if (error) {
-        console.error("Error fetching categories:", error);
-      } else {
-        setCategories(data || []);
-      }
-    };
-    loadCategories();
+    loadAppStatus();
+    loadFirstCategory();
   }, []);
 
   const loadAppStatus = async () => {
@@ -44,12 +36,29 @@ const CategoryList: React.FC = () => {
       setAppStatus(isRunning);
     } catch (error) {
       setAppStatus(false);
+      console.error("Error loading app status:", error);
     }
   };
 
-  useEffect(() => {
-    loadAppStatus();
-  }, []);
+  const loadFirstCategory = async () => {
+    try {
+      const { data, error } = await fetchFirstCategory();
+      if (error) {
+        throw new Error("Error fetching first category");
+      }
+      setFirstCategoryId(data?.id || null);
+    } catch (error) {
+      console.error("Error loading first category:", error);
+    }
+  };
+
+  const handleStart = () => {
+    if (firstCategoryId) {
+      navigate(`/vote/${firstCategoryId}`);
+    } else {
+      console.error("No categories available");
+    }
+  };
 
   if (appStatus === null) {
     return (
@@ -69,6 +78,7 @@ const CategoryList: React.FC = () => {
       </Box>
     );
   }
+
   if (!appStatus) {
     return (
       <Box
@@ -88,35 +98,39 @@ const CategoryList: React.FC = () => {
   }
 
   return (
-    <Box p={8} borderRadius={"lg"} boxShadow="md" bg="gray.50">
-      <Flex as="h1" mb={6} alignItems="center" justifyContent="center">
-        <Box py={12} textAlign="center">
-          <Flex alignItems="center" justifyContent="center" gap={2}>
-            <FaAward size={32} className="mr-2" />
-            <Heading as="h2" size="2xl">
-              Categories
-            </Heading>
-          </Flex>
-          <Text mt={4} fontSize="lg">
-            Explore our award categories and cast your votes!
-          </Text>
-        </Box>
-      </Flex>
-      <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} spacing={4}>
-        {categories.map((category) => (
-          <Link key={category.id} to={`/vote/${category.id}`}>
-            <Button
-              border={"1px"}
-              borderColor={"gray.400"}
-              size="lg"
-              width="100%"
-              height="100px"
-            >
-              {category.name}
-            </Button>
-          </Link>
-        ))}
-      </SimpleGrid>
+    <Box
+      p={8}
+      borderRadius="lg"
+      boxShadow="md"
+      bg="gray.50"
+      alignItems="center"
+      justifyContent="center"
+    >
+      <VStack alignItems={"center"} spacing={8}>
+        <Flex as="h1" mb={6} alignItems="center" justifyContent="center">
+          <Box py={12} textAlign="center">
+            <Flex alignItems="center" justifyContent="center" gap={2}>
+              <FaAward size={32} className="mr-2" />
+              <Heading as="h2" size="2xl">
+                Categories
+              </Heading>
+            </Flex>
+            <Text m={4} fontSize="xl">
+              Welcome to the UnOptimized Awards 2024!
+            </Text>
+          </Box>
+        </Flex>
+        <Button
+          onClick={handleStart}
+          colorScheme="blue"
+          size="lg"
+          leftIcon={<FaAward />}
+          isDisabled={!firstCategoryId}
+        >
+          Start Voting
+        </Button>
+        <Text>Click the button above to start voting.</Text>
+      </VStack>
     </Box>
   );
 };

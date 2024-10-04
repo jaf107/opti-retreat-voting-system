@@ -11,12 +11,10 @@ import { SessionProvider } from "./contexts/SessionContext";
 import useSession from "./hooks/useSession";
 import { FaAward, FaChartPie } from "react-icons/fa";
 
-// Components
 import CategoryList from "./components/CategoryList";
 import VotingFlow from "./components/VotingFlow";
 import ResultsDashboard from "./components/ResultsDashboard";
 import AdminDashboard from "./components/AdminDashboard";
-import CategoriesManagement from "./components/CategoriesManagement";
 
 export default function App() {
   const session = useSession();
@@ -47,12 +45,6 @@ export default function App() {
                 <Route path="/vote/:categoryId" element={<VotingFlow />} />
                 <Route path="/result" element={<ResultsDashboard />} />
                 <Route path="/admin" element={<AdminDashboard />} />
-                {/* 
-                // Not supported yet
-                <Route
-                  path="/admin/categories"
-                  element={<CategoriesManagement />} 
-                /> */}
               </Routes>
             </Box>
             <Flex

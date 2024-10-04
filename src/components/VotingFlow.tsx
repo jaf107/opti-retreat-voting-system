@@ -1,15 +1,14 @@
 import React, { useEffect, useState, useContext } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { SessionContext } from "../contexts/SessionContext";
+import { updateVote } from "../utils/supabaseApi";
+import { fetchChoices } from "../utils/controllers/Choices";
+import { submitVote, checkIfUserHasVoted } from "../utils/controllers/Votes";
 import {
   fetchCategory,
-  fetchChoices,
-  submitVote,
-  checkIfUserHasVoted,
-  updateVote,
   getNextCategory,
   getPreviousCategory,
-} from "../utils/supabaseApi";
+} from "../utils/controllers/Categories";
 import {
   Box,
   Button,

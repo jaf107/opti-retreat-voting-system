@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { fetchResults, fetchCategories } from "../utils/supabaseApi";
+import { fetchResults } from "../utils/controllers/Results";
+import { fetchCategories } from "../utils/controllers/Categories";
 import {
   Box,
   Heading,

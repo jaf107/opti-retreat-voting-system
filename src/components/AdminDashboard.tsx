@@ -11,7 +11,7 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
-import { getAppStatus, toggleAppStatus } from "../utils/supabaseApi";
+import { getAppStatus, toggleAppStatus } from "../utils/controllers/AppStatus";
 
 const AdminDashboard: React.FC = () => {
   const [isVotingEnabled, setIsVotingEnabled] = useState<boolean>(false);

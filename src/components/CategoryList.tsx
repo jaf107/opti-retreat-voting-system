@@ -13,7 +13,8 @@ import {
   Text,
   Flex,
 } from "@chakra-ui/react";
-import { fetchCategories, getAppStatus } from "../utils/supabaseApi";
+import { fetchCategories } from "../utils/controllers/Categories";
+import { getAppStatus } from "../utils/controllers/AppStatus";
 import { FaAward } from "react-icons/fa";
 import { Category } from "../models/Category";
 

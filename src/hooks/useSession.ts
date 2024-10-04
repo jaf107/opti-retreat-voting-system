@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { registerUser } from "../utils/supabaseApi";
+import { registerUser } from "../utils/controllers/Users";
 import { v4 as uuidv4 } from "uuid";
 
 const SESSION_ID_KEY = "sessionId";

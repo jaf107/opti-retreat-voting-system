@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from "react";
+import React, { useEffect, useState, useContext, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { SessionContext } from "../contexts/SessionContext";
 import { updateVote } from "../utils/supabaseApi";
@@ -7,7 +7,6 @@ import { submitVote, checkIfUserHasVoted } from "../utils/controllers/Votes";
 import {
   fetchCategory,
   getNextCategory,
-  getPreviousCategory,
 } from "../utils/controllers/Categories";
 import {
   Box,
@@ -24,8 +23,7 @@ import {
   AspectRatio,
 } from "@chakra-ui/react";
 import { motion, AnimatePresence, isValidMotionProp } from "framer-motion";
-import { useSwipeable } from "react-swipeable";
-import { ChevronLeftIcon, ChevronRightIcon } from "@chakra-ui/icons";
+import { ChevronRightIcon } from "@chakra-ui/icons";
 import { Category } from "../models/Category";
 import { Choice } from "../models/Choice";
 
@@ -40,9 +38,7 @@ const VotingFlow: React.FC = () => {
   const [selectedChoiceId, setSelectedChoiceId] = useState<string | null>(null);
   const [votedChoiceId, setVotedChoiceId] = useState<string | null>(null);
   const [nextCategoryId, setNextCategoryId] = useState<string | null>(null);
-  const [previousCategoryId, setPreviousCategoryId] = useState<string | null>(
-    null
-  );
+  const [nextCategoryStatus, setNextCategoryStatus] = useState<boolean>(false);
   const navigate = useNavigate();
   const toast = useToast();
 
@@ -52,48 +48,62 @@ const VotingFlow: React.FC = () => {
   }
   const { sessionId, hasVoted, setHasVoted } = session;
 
-  useEffect(() => {
-    const loadCategory = async () => {
-      if (categoryId) {
-        const { data, error } = await fetchCategory(categoryId);
-        if (error) {
-          console.error("Error fetching category:", error);
-        } else {
-          setCategory(data);
-        }
+  const loadCategory = useCallback(async () => {
+    if (categoryId) {
+      const { data, error } = await fetchCategory(categoryId);
+      if (error) {
+        console.error("Error fetching category:", error);
+        toast({
+          title: "Error loading category",
+          description: error.message,
+          status: "error",
+          duration: 3000,
+          isClosable: true,
+          position: "top",
+        });
+      } else {
+        setCategory(data);
       }
-    };
+    }
+  }, [categoryId, toast]);
+
+  const loadChoices = useCallback(async () => {
+    if (categoryId) {
+      const { data, error } = await fetchChoices(categoryId);
+      if (error) {
+        console.error("Error fetching choices:", error);
+        toast({
+          title: "Error loading choices",
+          description: error.message,
+          status: "error",
+          duration: 3000,
+          isClosable: true,
+          position: "top",
+        });
+      } else {
+        setChoices(data || []);
+      }
+      checkIfVoted(categoryId);
+    }
+  }, [categoryId, toast]);
+
+  const loadNextCategory = useCallback(async () => {
+    if (categoryId) {
+      const { data: nextCategory } = await getNextCategory(categoryId);
+      setNextCategoryStatus(nextCategory?.status || false);
+      setNextCategoryId(nextCategory?.id || null);
+    }
+  }, [categoryId]);
+
+  useEffect(() => {
     loadCategory();
-  }, [categoryId]);
-
-  useEffect(() => {
-    const loadChoices = async () => {
-      if (categoryId) {
-        const { data, error } = await fetchChoices(categoryId);
-        if (error) {
-          console.error("Error fetching choices:", error);
-        } else {
-          setChoices(data || []);
-        }
-        checkIfVoted(categoryId);
-      }
-    };
     loadChoices();
-  }, [categoryId]);
+    loadNextCategory();
 
-  useEffect(() => {
-    const loadAdjacentCategories = async () => {
-      if (categoryId) {
-        const { data: nextCategory } = await getNextCategory(categoryId);
-        const { data: previousCategory } = await getPreviousCategory(
-          categoryId
-        );
-        setNextCategoryId(nextCategory?.id || null);
-        setPreviousCategoryId(previousCategory?.id || null);
-      }
-    };
-    loadAdjacentCategories();
-  }, [categoryId]);
+    const intervalId = setInterval(loadNextCategory, 5000); // Check every 5 seconds
+
+    return () => clearInterval(intervalId);
+  }, [loadCategory, loadChoices, loadNextCategory]);
 
   const checkIfVoted = async (categoryId: string) => {
     const { data, error } = await checkIfUserHasVoted(
@@ -178,26 +188,12 @@ const VotingFlow: React.FC = () => {
     }
   };
 
-  const handlePrevious = () => {
-    if (previousCategoryId) {
-      navigate(`/vote/${previousCategoryId}`);
-    } else {
-      navigate("/");
-    }
-  };
-
-  const handlers = useSwipeable({
-    onSwipedLeft: handleNext,
-    onSwipedRight: handlePrevious,
-    trackMouse: true,
-  });
-
   if (!category) {
     return <Box>Loading...</Box>;
   }
 
   return (
-    <Box {...handlers} position="relative" minHeight="100vh" pb="120px">
+    <Box position="relative" minHeight="100vh" pb="120px">
       <Container maxW="xl" centerContent>
         <Heading as="h2" size="xl" mb={8} textAlign="center">
           {category?.name}
@@ -242,7 +238,7 @@ const VotingFlow: React.FC = () => {
                   <VStack
                     p={2}
                     alignItems="center"
-                    justifyContent={"center"}
+                    justifyContent="center"
                     flex="1"
                   >
                     <Text fontWeight="bold" fontSize="sm">
@@ -267,15 +263,7 @@ const VotingFlow: React.FC = () => {
         boxShadow="0 -4px 6px -1px rgba(0, 0, 0, 0.1)"
         zIndex={10}
       >
-        <Button
-          onClick={handlePrevious}
-          disabled={!previousCategoryId}
-          leftIcon={<ChevronLeftIcon />}
-          variant="outline"
-          size="sm"
-        >
-          Prev
-        </Button>
+        <Box style={{ color: "white" }}>Heddsllo</Box>
         <Button
           onClick={handleSubmit}
           colorScheme="blue"
@@ -289,6 +277,7 @@ const VotingFlow: React.FC = () => {
         </Button>
         <Button
           onClick={handleNext}
+          isDisabled={!nextCategoryStatus}
           rightIcon={<ChevronRightIcon />}
           variant="outline"
           size="sm"

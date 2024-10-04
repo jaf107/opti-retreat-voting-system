@@ -2,7 +2,10 @@ import { CATEGORIES } from "../../constants/db.names";
 import { supabase } from "../supabaseClient";
 
 export const fetchCategories = async () => {
-  const { data, error } = await supabase.from(CATEGORIES).select("*");
+  const { data, error } = await supabase
+    .from(CATEGORIES)
+    .select("*")
+    .order("order_index", { ascending: true });
   return { data, error };
 };
 
@@ -53,4 +56,14 @@ export const fetchCategory = async (categoryId: string) => {
     .single();
 
   return { data, error };
+};
+
+export const updateCategoryStatus = async (
+  categoryId: string,
+  status: boolean
+) => {
+  return await supabase
+    .from(CATEGORIES)
+    .update({ status })
+    .eq("id", categoryId);
 };

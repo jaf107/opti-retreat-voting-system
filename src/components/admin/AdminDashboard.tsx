@@ -11,15 +11,15 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
-import { getAppStatus, toggleAppStatus } from "../utils/controllers/AppStatus";
+import {
+  getAppStatus,
+  toggleAppStatus,
+} from "../../utils/controllers/AppStatus";
+import CategoryManagement from "./CategoryManagement";
 
 const AdminDashboard: React.FC = () => {
   const [isVotingEnabled, setIsVotingEnabled] = useState<boolean>(false);
   const toast = useToast();
-
-  useEffect(() => {
-    checkVotingStatus();
-  }, []);
 
   useEffect(() => {
     checkVotingStatus();
@@ -65,30 +65,37 @@ const AdminDashboard: React.FC = () => {
       });
     }
   };
+
   return (
     <Container maxW="container.xl" py={8}>
-      <Flex
-        flexDirection={"column"}
-        alignItems={"center"}
-        justifyContent={"center"}
-      >
+      <Flex flexDirection="column" alignItems="center" justifyContent="center">
         <Heading as="h1" size="xl" mb={8}>
           Admin Dashboard
         </Heading>
-        <Box p={10} borderWidth={1} borderRadius="lg">
-          <VStack spacing={4} align="stretch">
-            <Heading size="md">Voting Status</Heading>
-            <Text>
-              Current status: {isVotingEnabled ? "Enabled" : "Disabled"}
-            </Text>
-            <Button
-              colorScheme={isVotingEnabled ? "red" : "green"}
-              onClick={toggleVoting}
-            >
-              {isVotingEnabled ? "Stop Voting" : "Start Voting"}
-            </Button>
-          </VStack>
-        </Box>
+        <SimpleGrid columns={{ base: 1, md: 2 }} spacing={8} width="100%">
+          <Box p={6} borderWidth={1} borderRadius="lg" shadow="md">
+            <VStack spacing={4} align="stretch">
+              <Heading size="md">Voting Status</Heading>
+              <Text>
+                Current status: {isVotingEnabled ? "Enabled" : "Disabled"}
+              </Text>
+              <Button
+                colorScheme={isVotingEnabled ? "red" : "green"}
+                onClick={toggleVoting}
+              >
+                {isVotingEnabled ? "Stop Voting" : "Start Voting"}
+              </Button>
+            </VStack>
+          </Box>
+          <Box p={6} borderWidth={1} borderRadius="lg" shadow="md">
+            <VStack spacing={4} align="stretch">
+              <Heading size="md">Quick Links</Heading>
+              <Button as={Link} to="/admin/categories" colorScheme="blue">
+                Categories
+              </Button>
+            </VStack>
+          </Box>
+        </SimpleGrid>
       </Flex>
     </Container>
   );

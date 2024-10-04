@@ -1,8 +1,16 @@
+import {
+  APP_STATUS,
+  CATEGORIES,
+  CHOICES,
+  RESULTS_FUNCTION,
+  USERS,
+  VOTES,
+} from "../constants/db.names";
 import { supabase } from "./supabaseClient";
 
 export const getAppStatus = async () => {
   const { data, error } = await supabase
-    .from("app_status")
+    .from(APP_STATUS)
     .select("is_running")
     .eq("id", 1)
     .single();
@@ -19,7 +27,7 @@ export const toggleAppStatus = async () => {
   const newStatus = !currentStatus.is_running;
 
   const { data, error } = await supabase
-    .from("app_status")
+    .from(APP_STATUS)
     .update({ is_running: newStatus })
     .eq("id", 1)
     .single();
@@ -28,13 +36,13 @@ export const toggleAppStatus = async () => {
 };
 
 export const fetchCategories = async () => {
-  const { data, error } = await supabase.from("categories").select("*");
+  const { data, error } = await supabase.from(CATEGORIES).select("*");
   return { data, error };
 };
 
 export const fetchCategoriesInOrder = async () => {
   const { data, error } = await supabase
-    .from("categories")
+    .from(CATEGORIES)
     .select("*")
     .order("order_index", { ascending: true });
   return { data, error };
@@ -42,7 +50,7 @@ export const fetchCategoriesInOrder = async () => {
 
 export const getNextCategory = async (currentCategoryId: string) => {
   const { data: currentCategory, error: currentError } = await supabase
-    .from("categories")
+    .from(CATEGORIES)
     .select("order_index")
     .eq("id", currentCategoryId)
     .single();
@@ -50,7 +58,7 @@ export const getNextCategory = async (currentCategoryId: string) => {
   if (currentError) return { data: null, error: currentError };
 
   const { data, error } = await supabase
-    .from("categories")
+    .from(CATEGORIES)
     .select("*")
     .gt("order_index", currentCategory.order_index)
     .order("order_index", { ascending: true })
@@ -62,7 +70,7 @@ export const getNextCategory = async (currentCategoryId: string) => {
 
 export const getPreviousCategory = async (currentCategoryId: string) => {
   const { data: currentCategory, error: currentError } = await supabase
-    .from("categories")
+    .from(CATEGORIES)
     .select("order_index")
     .eq("id", currentCategoryId)
     .single();
@@ -70,7 +78,7 @@ export const getPreviousCategory = async (currentCategoryId: string) => {
   if (currentError) return { data: null, error: currentError };
 
   const { data, error } = await supabase
-    .from("categories")
+    .from(CATEGORIES)
     .select("*")
     .lt("order_index", currentCategory.order_index)
     .order("order_index", { ascending: false })
@@ -82,7 +90,7 @@ export const getPreviousCategory = async (currentCategoryId: string) => {
 
 export const fetchCategory = async (categoryId: string) => {
   const { data, error } = await supabase
-    .from("categories")
+    .from(CATEGORIES)
     .select("*")
     .eq("id", categoryId)
     .single();
@@ -93,7 +101,7 @@ export const fetchCategory = async (categoryId: string) => {
 export const fetchPollOptions = async (categoryId: string) => {
   try {
     const { data, error } = await supabase
-      .from("polls")
+      .from(CHOICES)
       .select("*")
       .eq("category_id", categoryId);
 
@@ -114,7 +122,7 @@ export const checkIfUserHasVoted = async (
 ) => {
   try {
     const { data, error } = await supabase
-      .from("user_votes")
+      .from(VOTES)
       .select("*")
       .eq("session_id", sessionId)
       .eq("category_id", categoryId);
@@ -136,7 +144,7 @@ export const submitVote = async (
   optionId: string
 ) => {
   try {
-    const { data, error } = await supabase.from("user_votes").upsert({
+    const { data, error } = await supabase.from(VOTES).upsert({
       session_id: sessionId,
       category_id: categoryId,
       option_id: optionId,
@@ -155,7 +163,7 @@ export const submitVote = async (
 
 export const fetchResults = async () => {
   try {
-    const { data, error } = await supabase.rpc("get_results");
+    const { data, error } = await supabase.rpc(RESULTS_FUNCTION);
     if (error) {
       throw new Error(`Error fetching results: ${error.message}`);
     }
@@ -172,7 +180,7 @@ export const updateVote = async (
   optionId: string
 ) => {
   const { data, error } = await supabase
-    .from("user_votes")
+    .from(VOTES)
     .update({ option_id: optionId })
     .match({ session_id: sessionId, category_id: categoryId });
 
@@ -180,7 +188,7 @@ export const updateVote = async (
 };
 
 export const registerUser = async (sessionId: string) => {
-  const { data, error } = await supabase.from("user_sessions").insert([
+  const { data, error } = await supabase.from(USERS).insert([
     {
       session_id: sessionId,
     },

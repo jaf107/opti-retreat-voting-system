@@ -36,7 +36,7 @@ type Category = {
 type Option = {
   id: string;
   name: string;
-  image_url: string;
+  image_src: string;
 };
 
 const MotionBox = chakra(motion.div, {
@@ -239,7 +239,7 @@ const VotingFlow: React.FC = () => {
                 >
                   <AspectRatio ratio={1} width="100%">
                     <Image
-                      src={option.image_url}
+                      src={option.image_src}
                       alt={option.name}
                       objectFit="cover"
                       width="100%"

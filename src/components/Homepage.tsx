@@ -16,7 +16,7 @@ import { getAppStatus } from "../utils/controllers/AppStatus";
 import { fetchFirstCategory } from "../utils/controllers/Categories";
 import { FaAward } from "react-icons/fa";
 
-const CategoryList: React.FC = () => {
+const Homepage: React.FC = () => {
   const [appStatus, setAppStatus] = useState<boolean | null>(null);
   const [firstCategoryId, setFirstCategoryId] = useState<string | null>(null);
   const navigate = useNavigate();
@@ -135,4 +135,4 @@ const CategoryList: React.FC = () => {
   );
 };
 
-export default CategoryList;
+export default Homepage;

@@ -11,7 +11,7 @@ import { SessionProvider } from "./contexts/SessionContext";
 import useSession from "./hooks/useSession";
 import { FaAward, FaChartPie } from "react-icons/fa";
 
-import CategoryList from "./components/CategoryList";
+import Homepage from "./components/Homepage";
 import VotingFlow from "./components/VotingFlow";
 import ResultsDashboard from "./components/ResultsDashboard";
 import AdminDashboard from "./components/admin/AdminDashboard";
@@ -42,7 +42,7 @@ export default function App() {
             </Flex>
             <Box flex="1" overflowY="auto" p={4} bg="gray.100">
               <Routes>
-                <Route path="/" element={<CategoryList />} />
+                <Route path="/" element={<Homepage />} />
                 <Route path="/vote/:categoryId" element={<VotingFlow />} />
                 <Route path="/result" element={<ResultsDashboard />} />
                 <Route path="/admin" element={<AdminDashboard />} />

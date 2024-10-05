@@ -11,6 +11,6 @@ export type ChoiceResult = {
 };
 
 export interface ChoiceWithVotes extends Choice {
-  voteCount: number;
+  vote_count: number;
   votePercentage: number;
 }

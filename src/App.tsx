@@ -6,6 +6,7 @@ import {
   Button,
   Image,
   Heading,
+  Text,
 } from "@chakra-ui/react";
 import { SessionProvider } from "./contexts/SessionContext";
 import useSession from "./hooks/useSession";
@@ -35,6 +36,16 @@ export default function App() {
                 <Heading as="h2" size="md" fontWeight="bold">
                   UnOptimized Awards 2024
                 </Heading>
+              </Flex>
+              <Flex justifyContent={"flex-end"}>
+                <Link
+                  to="/admin"
+                  style={{
+                    cursor: "default",
+                  }}
+                >
+                  <Text>A</Text>
+                </Link>
               </Flex>
             </Flex>
             <Box flex="1" overflowY="auto" p={4} bg="gray.100">

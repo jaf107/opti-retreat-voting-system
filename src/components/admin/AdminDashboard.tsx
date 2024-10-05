@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import {
   Box,
   Button,
@@ -8,137 +8,132 @@ import {
   SimpleGrid,
   Text,
   VStack,
-  useToast,
 } from "@chakra-ui/react";
 import { Link, Route, Routes } from "react-router-dom";
-import {
-  getAppStatus,
-  toggleAppStatus,
-} from "../../utils/controllers/AppStatus";
+import { useAdminStatus } from "../../hooks/useAdminStatus";
 import CategoryManagement from "./CategoryManagement";
 import ResultsDashboard from "./ResultsDashboard";
-import AnnouncementPage from "./AnnouncementPage";
+import { CategoryAnnouncement } from "./CategoryAnnouncement";
+import { Category } from "../../models/Category";
+import { useCategories } from "../../hooks/useCategories";
 
-const AdminDashboard: React.FC = () => {
-  const [isVotingEnabled, setIsVotingEnabled] = useState<boolean>(false);
-  const toast = useToast();
+interface AdminCardProps {
+  title: string;
+  children: React.ReactNode;
+}
 
-  useEffect(() => {
-    checkVotingStatus();
-  }, []);
+const AdminCard: React.FC<AdminCardProps> = ({ title, children }) => (
+  <Box p={6} borderWidth={1} borderRadius="lg" shadow="md">
+    <VStack spacing={4} align="stretch">
+      <Heading size="md">{title}</Heading>
+      {children}
+    </VStack>
+  </Box>
+);
 
-  const checkVotingStatus = async () => {
-    try {
-      const { data, error } = await getAppStatus();
-      if (error) throw error;
-      setIsVotingEnabled(!!data?.is_running);
-    } catch (error) {
-      toast({
-        title: "Error checking voting status",
-        description: error instanceof Error ? error.message : "Unknown error",
-        status: "error",
-        duration: 3000,
-        position: "top",
-        isClosable: true,
-      });
-    }
-  };
+const AdminNavigation: React.FC = () => (
+  <Flex width="100%" mb={8}>
+    <Button as={Link} to="/admin" mr={4}>
+      Home
+    </Button>
+    <Button as={Link} to="/admin/categories" mr={4}>
+      Categories
+    </Button>
+    <Button as={Link} to="/admin/results" mr={4}>
+      Results
+    </Button>
+    <Button as={Link} to="/admin/announce">
+      Announcement
+    </Button>
+  </Flex>
+);
 
-  const toggleVoting = async () => {
-    try {
-      const { data, error } = await toggleAppStatus();
-      if (error) throw error;
-      setIsVotingEnabled(data || false);
-      toast({
-        title: `Voting ${data ? "enabled" : "disabled"}`,
-        status: "success",
-        duration: 3000,
-        isClosable: true,
-        position: "top",
-      });
-    } catch (error) {
-      toast({
-        title: "Error toggling voting status",
-        description: error instanceof Error ? error.message : "Unknown error",
-        status: "error",
-        duration: 3000,
-        isClosable: true,
-        position: "top",
-      });
-    }
-  };
+const AdminHome: React.FC = () => {
+  const { isVotingEnabled, toggleVoting } = useAdminStatus();
 
-  const AdminHome = () => (
+  return (
     <SimpleGrid columns={{ base: 1 }} spacing={8} width="100%">
-      <Box p={6} borderWidth={1} borderRadius="lg" shadow="md">
-        <VStack spacing={4} align="stretch">
-          <Heading size="md">Voting Status</Heading>
-          <Text>
-            Current status: {isVotingEnabled ? "Enabled" : "Disabled"}
-          </Text>
-          <Button
-            colorScheme={isVotingEnabled ? "red" : "green"}
-            onClick={toggleVoting}
-          >
-            {isVotingEnabled ? "Stop Voting" : "Start Voting"}
-          </Button>
-        </VStack>
-      </Box>
-      <Box p={6} borderWidth={1} borderRadius="lg" shadow="md">
-        <VStack spacing={4} align="stretch">
-          <Heading size="md">Category Management</Heading>
-          <Button as={Link} to="/admin/categories" colorScheme="blue">
-            Manage Categories
-          </Button>
-        </VStack>
-      </Box>
-      <Box p={6} borderWidth={1} borderRadius="lg" shadow="md">
-        <VStack spacing={4} align="stretch">
-          <Heading size="md">Results Dashboard</Heading>
-          <Button as={Link} to="/admin/results" colorScheme="blue">
-            View Results
-          </Button>
-        </VStack>
-      </Box>
-      <Box p={6} borderWidth={1} borderRadius="lg" shadow="md">
-        <VStack spacing={4} align="stretch">
-          <Heading size="md">Announcement</Heading>
-          <Button as={Link} to="/admin/announce" colorScheme="blue">
-            Announcement
-          </Button>
-        </VStack>
-      </Box>
+      <AdminCard title="Voting Status">
+        <Text>Current status: {isVotingEnabled ? "Enabled" : "Disabled"}</Text>
+        <Button
+          colorScheme={isVotingEnabled ? "red" : "green"}
+          onClick={toggleVoting}
+        >
+          {isVotingEnabled ? "Stop Voting" : "Start Voting"}
+        </Button>
+      </AdminCard>
+
+      <AdminCard title="Category Management">
+        <Button as={Link} to="/admin/categories" colorScheme="blue">
+          Manage Categories
+        </Button>
+      </AdminCard>
+
+      <AdminCard title="Results Dashboard">
+        <Button as={Link} to="/admin/results" colorScheme="blue">
+          View Results
+        </Button>
+      </AdminCard>
+
+      <AdminCard title="Announcement">
+        <Button as={Link} to="/admin/announce" colorScheme="blue">
+          Start Announcements
+        </Button>
+      </AdminCard>
     </SimpleGrid>
   );
+};
 
+const AdminDashboard: React.FC = () => {
   return (
     <Container maxW="container.xl" py={8}>
       <Flex flexDirection="column" alignItems="center" justifyContent="center">
         <Heading as="h1" size="xl" mb={8}>
           Admin Dashboard
         </Heading>
-        <Flex width="100%" mb={8}>
-          <Button as={Link} to="/admin" mr={4}>
-            Home
-          </Button>
-          <Button as={Link} to="/admin/categories" mr={4}>
-            Categories
-          </Button>
-          <Button as={Link} to="/admin/results">
-            Results
-          </Button>
-          <Button as={Link} to="/admin/announce">
-            Announcement
-          </Button>
-        </Flex>
+        <AdminNavigation />
         <Routes>
           <Route path="/" element={<AdminHome />} />
           <Route path="/categories" element={<CategoryManagement />} />
           <Route path="/results" element={<ResultsDashboard />} />
-          <Route path="/announce" element={<AnnouncementPage />} />
+          <Route path="/announce" element={<AnnouncementCategoriesList />} />
+          <Route
+            path="/announce/:categoryId"
+            element={<CategoryAnnouncement />}
+          />
         </Routes>
       </Flex>
     </Container>
+  );
+};
+
+const AnnouncementCategoriesList: React.FC = () => {
+  const { categories, isLoading } = useCategories();
+
+  if (isLoading) {
+    return <Box>Loading...</Box>;
+  }
+
+  return (
+    <SimpleGrid columns={{ base: 1 }} spacing={4} width="100%">
+      <Heading size="lg" mb={4}>
+        Select Category to Announce
+      </Heading>
+      {categories.map((category: Category) => (
+        <Button
+          key={category.id}
+          as={Link}
+          to={`/admin/announce/${category.id}`}
+          size="lg"
+          variant="outline"
+          justifyContent="flex-start"
+          px={6}
+          py={8}
+        >
+          {category.name}
+        </Button>
+      ))}
+    </SimpleGrid>
   );
 };
 

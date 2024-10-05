@@ -44,7 +44,7 @@ export default function App() {
                     cursor: "default",
                   }}
                 >
-                  <Text>A</Text>
+                  <Text color={"white"}>A</Text>
                 </Link>
               </Flex>
             </Flex>

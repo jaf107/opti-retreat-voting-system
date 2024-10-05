@@ -30,7 +30,7 @@ const AnnouncementPage: React.FC = () => {
   const [categories, setCategories] = useState<CategoryWithChoices[]>([]);
 
   const [currentCategoryIndex, setCurrentCategoryIndex] = useState(0);
-  const [otherChoiceSize, setOtherChoiceSize] = useState<number>(3);
+  const [otherChoiceSize, setOtherChoiceSize] = useState<number>(0);
   const toast = useToast();
 
   const currentCategory = categories[currentCategoryIndex];

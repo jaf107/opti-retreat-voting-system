@@ -12,7 +12,6 @@ import {
 import { Link, Route, Routes } from "react-router-dom";
 import { useAdminStatus } from "../../hooks/useAdminStatus";
 import CategoryManagement from "./CategoryManagement";
-import ResultsDashboard from "./ResultsDashboard";
 import { CategoryAnnouncement } from "./CategoryAnnouncement";
 import { Category } from "../../models/Category";
 import { useCategories } from "../../hooks/useCategories";
@@ -32,15 +31,12 @@ const AdminCard: React.FC<AdminCardProps> = ({ title, children }) => (
 );
 
 const AdminNavigation: React.FC = () => (
-  <Flex width="100%" mb={8}>
+  <Flex width="100%" mb={8} justifyContent="center">
     <Button as={Link} to="/admin" mr={4}>
       Home
     </Button>
     <Button as={Link} to="/admin/categories" mr={4}>
       Categories
-    </Button>
-    <Button as={Link} to="/admin/results" mr={4}>
-      Results
     </Button>
     <Button as={Link} to="/admin/announce">
       Announcement
@@ -69,12 +65,6 @@ const AdminHome: React.FC = () => {
         </Button>
       </AdminCard>
 
-      <AdminCard title="Results Dashboard">
-        <Button as={Link} to="/admin/results" colorScheme="blue">
-          View Results
-        </Button>
-      </AdminCard>
-
       <AdminCard title="Announcement">
         <Button as={Link} to="/admin/announce" colorScheme="blue">
           Start Announcements
@@ -95,7 +85,6 @@ const AdminDashboard: React.FC = () => {
         <Routes>
           <Route path="/" element={<AdminHome />} />
           <Route path="/categories" element={<CategoryManagement />} />
-          <Route path="/results" element={<ResultsDashboard />} />
           <Route path="/announce" element={<AnnouncementCategoriesList />} />
           <Route
             path="/announce/:categoryId"

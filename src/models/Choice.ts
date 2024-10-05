@@ -9,3 +9,8 @@ export type ChoiceResult = {
   votes: number;
   percentage: number;
 };
+
+export interface ChoiceWithVotes extends Choice {
+  voteCount: number;
+  votePercentage: number;
+}

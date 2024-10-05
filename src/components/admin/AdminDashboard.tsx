@@ -17,6 +17,7 @@ import {
 } from "../../utils/controllers/AppStatus";
 import CategoryManagement from "./CategoryManagement";
 import ResultsDashboard from "./ResultsDashboard";
+import AnnouncementPage from "./AnnouncementPage";
 
 const AdminDashboard: React.FC = () => {
   const [isVotingEnabled, setIsVotingEnabled] = useState<boolean>(false);
@@ -99,6 +100,14 @@ const AdminDashboard: React.FC = () => {
           </Button>
         </VStack>
       </Box>
+      <Box p={6} borderWidth={1} borderRadius="lg" shadow="md">
+        <VStack spacing={4} align="stretch">
+          <Heading size="md">Announcement</Heading>
+          <Button as={Link} to="/admin/announce" colorScheme="blue">
+            Announcement
+          </Button>
+        </VStack>
+      </Box>
     </SimpleGrid>
   );
 
@@ -118,11 +127,15 @@ const AdminDashboard: React.FC = () => {
           <Button as={Link} to="/admin/results">
             Results
           </Button>
+          <Button as={Link} to="/admin/announce">
+            Announcement
+          </Button>
         </Flex>
         <Routes>
           <Route path="/" element={<AdminHome />} />
           <Route path="/categories" element={<CategoryManagement />} />
           <Route path="/results" element={<ResultsDashboard />} />
+          <Route path="/announce" element={<AnnouncementPage />} />
         </Routes>
       </Flex>
     </Container>

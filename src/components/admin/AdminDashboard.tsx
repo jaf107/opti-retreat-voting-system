@@ -15,6 +15,8 @@ import CategoryManagement from "./CategoryManagement";
 import { CategoryAnnouncement } from "./CategoryAnnouncement";
 import { Category } from "../../models/Category";
 import { useCategories } from "../../hooks/useCategories";
+import { useAuth } from "../../hooks/useAuth";
+import { AuthModal } from "../AuthModel";
 
 interface AdminCardProps {
   title: string;
@@ -75,12 +77,23 @@ const AdminHome: React.FC = () => {
 };
 
 const AdminDashboard: React.FC = () => {
+  const { isAuthenticated, isAuthModalOpen, authenticate, logout } = useAuth();
+
+  if (!isAuthenticated) {
+    return <AuthModal isOpen={isAuthModalOpen} onAuthenticate={authenticate} />;
+  }
+
   return (
     <Container maxW="container.xl" py={8}>
       <Flex flexDirection="column" alignItems="center" justifyContent="center">
         <Heading as="h1" size="xl" mb={8}>
           Admin Dashboard
         </Heading>
+        <Flex width="100%" justifyContent="flex-end" mb={4}>
+          <Button colorScheme="red" onClick={logout}>
+            Logout
+          </Button>
+        </Flex>
         <AdminNavigation />
         <Routes>
           <Route path="/" element={<AdminHome />} />
@@ -95,7 +108,6 @@ const AdminDashboard: React.FC = () => {
     </Container>
   );
 };
-
 const AnnouncementCategoriesList: React.FC = () => {
   const { categories, isLoading } = useCategories();
 

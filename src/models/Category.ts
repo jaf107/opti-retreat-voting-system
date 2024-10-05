@@ -1,4 +1,4 @@
-import { ChoiceResult } from "./Choice";
+import { ChoiceResult, ChoiceWithVotes } from "./Choice";
 
 export type Category = {
   id: string;
@@ -11,3 +11,9 @@ export type CategoryResult = {
   category_name: string;
   options: ChoiceResult[];
 };
+
+export interface CategoryWithChoices extends Category {
+  choices: ChoiceWithVotes[];
+  winner: ChoiceWithVotes | null;
+  totalVotes: number;
+}

@@ -10,12 +10,14 @@ import {
   VStack,
   useToast,
 } from "@chakra-ui/react";
-import { Link } from "react-router-dom";
+import { Link, Route, Routes } from "react-router-dom";
 import {
   getAppStatus,
   toggleAppStatus,
 } from "../../utils/controllers/AppStatus";
 import CategoryManagement from "./CategoryManagement";
+import ResultsDashboard from "./ResultsDashboard";
+import AnnouncementPage from "./AnnouncementPage";
 
 const AdminDashboard: React.FC = () => {
   const [isVotingEnabled, setIsVotingEnabled] = useState<boolean>(false);
@@ -66,44 +68,75 @@ const AdminDashboard: React.FC = () => {
     }
   };
 
+  const AdminHome = () => (
+    <SimpleGrid columns={{ base: 1 }} spacing={8} width="100%">
+      <Box p={6} borderWidth={1} borderRadius="lg" shadow="md">
+        <VStack spacing={4} align="stretch">
+          <Heading size="md">Voting Status</Heading>
+          <Text>
+            Current status: {isVotingEnabled ? "Enabled" : "Disabled"}
+          </Text>
+          <Button
+            colorScheme={isVotingEnabled ? "red" : "green"}
+            onClick={toggleVoting}
+          >
+            {isVotingEnabled ? "Stop Voting" : "Start Voting"}
+          </Button>
+        </VStack>
+      </Box>
+      <Box p={6} borderWidth={1} borderRadius="lg" shadow="md">
+        <VStack spacing={4} align="stretch">
+          <Heading size="md">Category Management</Heading>
+          <Button as={Link} to="/admin/categories" colorScheme="blue">
+            Manage Categories
+          </Button>
+        </VStack>
+      </Box>
+      <Box p={6} borderWidth={1} borderRadius="lg" shadow="md">
+        <VStack spacing={4} align="stretch">
+          <Heading size="md">Results Dashboard</Heading>
+          <Button as={Link} to="/admin/results" colorScheme="blue">
+            View Results
+          </Button>
+        </VStack>
+      </Box>
+      <Box p={6} borderWidth={1} borderRadius="lg" shadow="md">
+        <VStack spacing={4} align="stretch">
+          <Heading size="md">Announcement</Heading>
+          <Button as={Link} to="/admin/announce" colorScheme="blue">
+            Announcement
+          </Button>
+        </VStack>
+      </Box>
+    </SimpleGrid>
+  );
+
   return (
     <Container maxW="container.xl" py={8}>
       <Flex flexDirection="column" alignItems="center" justifyContent="center">
         <Heading as="h1" size="xl" mb={8}>
           Admin Dashboard
         </Heading>
-        <SimpleGrid columns={{ base: 1 }} spacing={8} width="100%">
-          <Box p={6} borderWidth={1} borderRadius="lg" shadow="md">
-            <VStack spacing={4} align="stretch">
-              <Heading size="md">Voting Status</Heading>
-              <Text>
-                Current status: {isVotingEnabled ? "Enabled" : "Disabled"}
-              </Text>
-              <Button
-                colorScheme={isVotingEnabled ? "red" : "green"}
-                onClick={toggleVoting}
-              >
-                {isVotingEnabled ? "Stop Voting" : "Start Voting"}
-              </Button>
-            </VStack>
-          </Box>
-          <Box p={6} borderWidth={1} borderRadius="lg" shadow="md">
-            <VStack spacing={4} align="stretch">
-              <Heading size="md">Category Management</Heading>
-              <Button as={Link} to="/admin/categories" colorScheme="blue">
-                Categories
-              </Button>
-            </VStack>
-          </Box>
-          <Box p={6} borderWidth={1} borderRadius="lg" shadow="md">
-            <VStack spacing={4} align="stretch">
-              <Heading size="md">Results Dashboard</Heading>
-              <Button as={Link} to="/admin/result" colorScheme="blue">
-                Result
-              </Button>
-            </VStack>
-          </Box>
-        </SimpleGrid>
+        <Flex width="100%" mb={8}>
+          <Button as={Link} to="/admin" mr={4}>
+            Home
+          </Button>
+          <Button as={Link} to="/admin/categories" mr={4}>
+            Categories
+          </Button>
+          <Button as={Link} to="/admin/results">
+            Results
+          </Button>
+          <Button as={Link} to="/admin/announce">
+            Announcement
+          </Button>
+        </Flex>
+        <Routes>
+          <Route path="/" element={<AdminHome />} />
+          <Route path="/categories" element={<CategoryManagement />} />
+          <Route path="/results" element={<ResultsDashboard />} />
+          <Route path="/announce" element={<AnnouncementPage />} />
+        </Routes>
       </Flex>
     </Container>
   );

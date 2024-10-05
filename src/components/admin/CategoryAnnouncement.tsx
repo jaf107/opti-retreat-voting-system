@@ -149,7 +149,7 @@ export const CategoryAnnouncement: React.FC = () => {
         </AnimatePresence>
 
         <SimpleGrid
-          columns={showWinner ? otherChoiceSize : 2}
+          columns={showWinner ? (otherChoiceSize % 2 === 0 ? 2 : 3) : 2}
           spacing={4}
           px={4}
           width="100%"
@@ -204,11 +204,16 @@ const AnnouncementControls: React.FC<AnnouncementControlsProps> = ({
     zIndex={10}
   >
     <Box style={{ color: "white" }}>Placeholder</Box>
-    {!showWinner && (
-      <Button onClick={onShowWinner} colorScheme="blue" size="sm">
-        Show Winner
-      </Button>
-    )}
+    {/* {!showWinner && ( */}
+    <Button
+      isDisabled={showWinner}
+      onClick={onShowWinner}
+      colorScheme="blue"
+      size="sm"
+    >
+      Show Winner
+    </Button>
+    {/* )} */}
     <Button
       onClick={onNext}
       rightIcon={<ChevronRightIcon />}

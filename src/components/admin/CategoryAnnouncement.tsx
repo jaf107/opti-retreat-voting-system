@@ -204,7 +204,6 @@ const AnnouncementControls: React.FC<AnnouncementControlsProps> = ({
     zIndex={10}
   >
     <Box style={{ color: "white" }}>Placeholder</Box>
-    {/* {!showWinner && ( */}
     <Button
       isDisabled={showWinner}
       onClick={onShowWinner}
@@ -213,7 +212,6 @@ const AnnouncementControls: React.FC<AnnouncementControlsProps> = ({
     >
       Show Winner
     </Button>
-    {/* )} */}
     <Button
       onClick={onNext}
       rightIcon={<ChevronRightIcon />}

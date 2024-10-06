@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useToast } from "@chakra-ui/react";
 import { getAppStatus, toggleAppStatus } from "../utils/supabaseApi";
 
@@ -6,7 +6,7 @@ export const useAdminStatus = () => {
   const [isVotingEnabled, setIsVotingEnabled] = useState<boolean>(false);
   const toast = useToast();
 
-  const checkVotingStatus = async () => {
+  const checkVotingStatus = useCallback(async () => {
     try {
       const { data, error } = await getAppStatus();
       if (error) throw error;
@@ -21,7 +21,7 @@ export const useAdminStatus = () => {
         isClosable: true,
       });
     }
-  };
+  }, [toast]);
 
   const toggleVoting = async () => {
     try {
@@ -49,7 +49,7 @@ export const useAdminStatus = () => {
 
   useEffect(() => {
     checkVotingStatus();
-  }, []);
+  }, [checkVotingStatus]);
 
   return { isVotingEnabled, toggleVoting };
 };

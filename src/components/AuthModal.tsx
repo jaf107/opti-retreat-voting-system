@@ -33,6 +33,11 @@ export const AuthModal: React.FC<AuthModalProps> = ({
     }
   };
 
+  const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setPassword(e.target.value);
+    if (error) setError("");
+  };
+
   return (
     <Modal isOpen={isOpen} onClose={() => {}} closeOnOverlayClick={false}>
       <ModalOverlay />
@@ -44,7 +49,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
               type="password"
               placeholder="Enter admin password"
               value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              onChange={handlePasswordChange}
               onKeyPress={(e) => e.key === "Enter" && handleSubmit()}
             />
             {error && <Text color="red.500">{error}</Text>}

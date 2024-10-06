@@ -6,6 +6,7 @@ import {
   Flex,
   Heading,
   SimpleGrid,
+  Spinner,
   Text,
   VStack,
 } from "@chakra-ui/react";
@@ -13,10 +14,9 @@ import { Link, Route, Routes } from "react-router-dom";
 import { useAdminStatus } from "../../hooks/useAdminStatus";
 import CategoryManagement from "./CategoryManagement";
 import { CategoryAnnouncement } from "./CategoryAnnouncement";
-import { Category } from "../../models/Category";
-import { useCategories } from "../../hooks/useCategories";
 import { useAuth } from "../../hooks/useAuth";
-import { AuthModal } from "../AuthModel";
+import { AuthModal } from "../AuthModal";
+import AnnouncementCategoriesList from "./AnnouncementCategoryList";
 
 interface AdminCardProps {
   title: string;
@@ -90,7 +90,7 @@ const AdminDashboard: React.FC = () => {
           Admin Dashboard
         </Heading>
         <Flex width="100%" justifyContent="flex-end" mb={4}>
-          <Button colorScheme="red" onClick={logout}>
+          <Button colorScheme="red" aria-label="Logout" onClick={logout}>
             Logout
           </Button>
         </Flex>
@@ -106,35 +106,6 @@ const AdminDashboard: React.FC = () => {
         </Routes>
       </Flex>
     </Container>
-  );
-};
-const AnnouncementCategoriesList: React.FC = () => {
-  const { categories, isLoading } = useCategories();
-
-  if (isLoading) {
-    return <Box>Loading...</Box>;
-  }
-
-  return (
-    <SimpleGrid columns={{ base: 1 }} spacing={4} width="100%">
-      <Heading size="lg" mb={4}>
-        Select Category to Announce
-      </Heading>
-      {categories.map((category: Category) => (
-        <Button
-          key={category.id}
-          as={Link}
-          to={`/admin/announce/${category.id}`}
-          size="lg"
-          variant="outline"
-          justifyContent="flex-start"
-          px={6}
-          py={8}
-        >
-          {category.name}
-        </Button>
-      ))}
-    </SimpleGrid>
   );
 };
 

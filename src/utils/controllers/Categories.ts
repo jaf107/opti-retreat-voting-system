@@ -74,8 +74,9 @@ export const updateCategoryStatus = async (
   categoryId: string,
   status: boolean
 ) => {
-  return await supabase
+  const { data, error } = await supabase
     .from(CATEGORIES)
     .update({ status })
     .eq("id", categoryId);
+  return { data, error };
 };

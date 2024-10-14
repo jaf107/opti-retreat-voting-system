@@ -39,7 +39,7 @@ const Category: React.FC<CategoryProps> = ({
         cursor="pointer"
         onClick={() => onSelect(choice.id)}
         bg={isSelected ? "blue.50" : "white"}
-        boxShadow={isSelected ? "0 0 0 3px rgba(66, 153, 225, 0.6)" : "lg"}
+        boxShadow={isSelected ? "0 0 0 5px rgba(51, 204, 51, 0.8)" : "lg"}
         transition="all 0.3s"
         _hover={{ transform: "translateY(-5px)" }}
         height="100%"

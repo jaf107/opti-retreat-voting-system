@@ -2,12 +2,9 @@ export type Choice = {
   id: string;
   name: string;
   image_src: string;
-};
-
-export type ChoiceResult = {
-  choice_name: string;
-  votes: number;
-  percentage: number;
+  category_id: string;
+  hidden: boolean;
+  rigged_vote_count: number;
 };
 
 export interface ChoiceWithVotes extends Choice {

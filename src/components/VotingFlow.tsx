@@ -16,7 +16,7 @@ import { useVotingState } from "../hooks/useVotingState";
 import { useNextCategory } from "../hooks/useNextCategory";
 import { useCategoryData } from "../hooks/useCategoryData";
 
-const VotingFlow: React.FC = () => {
+export default function VotingFlow() {
   const { categoryId } = useParams<{ categoryId: string }>();
   const navigate = useNavigate();
 
@@ -31,7 +31,6 @@ const VotingFlow: React.FC = () => {
   const {
     selectedChoiceId,
     setSelectedChoiceId,
-    votedChoiceId,
     hasVoted,
     handleVoteSubmission,
   } = useVotingState(categoryId, sessionId || "");
@@ -52,9 +51,10 @@ const VotingFlow: React.FC = () => {
   return (
     <Box position="relative" minHeight="100vh" pb="120px">
       <Container maxW="xl" centerContent>
-        <Heading as="h2" size="xl" mb={8} textAlign="center">
+        <Heading as="h2" size="xl" mb={4} textAlign="center">
           {category?.name}
         </Heading>
+
         <AnimatePresence mode="wait">
           <SimpleGrid columns={2} spacing={4} px={4} width="100%">
             {choices.map((choice) => (
@@ -63,6 +63,7 @@ const VotingFlow: React.FC = () => {
                 choice={choice}
                 isSelected={selectedChoiceId === choice.id}
                 onSelect={setSelectedChoiceId}
+                isDisabled={hasVoted}
               />
             ))}
           </SimpleGrid>
@@ -70,7 +71,6 @@ const VotingFlow: React.FC = () => {
       </Container>
       <VotingControls
         selectedChoiceId={selectedChoiceId}
-        votedChoiceId={votedChoiceId}
         hasVoted={hasVoted}
         nextCategoryStatus={nextCategoryStatus}
         nextCategoryId={nextCategoryId}
@@ -79,11 +79,10 @@ const VotingFlow: React.FC = () => {
       />
     </Box>
   );
-};
+}
 
 interface VotingControlsProps {
   selectedChoiceId: string | null;
-  votedChoiceId: string | null;
   hasVoted: boolean;
   nextCategoryStatus: boolean;
   nextCategoryId: string | null;
@@ -91,48 +90,45 @@ interface VotingControlsProps {
   onNext: () => void;
 }
 
-const VotingControls: React.FC<VotingControlsProps> = ({
+function VotingControls({
   selectedChoiceId,
-  votedChoiceId,
   hasVoted,
   nextCategoryStatus,
   nextCategoryId,
   onSubmit,
   onNext,
-}) => (
-  <Flex
-    position="fixed"
-    bottom="0"
-    left="0"
-    right="0"
-    justifyContent="space-between"
-    alignItems="center"
-    p={4}
-    bg="white"
-    boxShadow="0 -4px 6px -1px rgba(0, 0, 0, 0.1)"
-    zIndex={10}
-  >
-    <Box style={{ color: "white" }}>Placeholder</Box>
-    <Button
-      onClick={onSubmit}
-      colorScheme="blue"
-      isDisabled={
-        !selectedChoiceId || (hasVoted && selectedChoiceId === votedChoiceId)
-      }
-      size="sm"
+}: VotingControlsProps) {
+  return (
+    <Flex
+      position="fixed"
+      bottom="0"
+      left="0"
+      right="0"
+      justifyContent="space-between"
+      alignItems="center"
+      p={4}
+      bg="white"
+      boxShadow="0 -4px 6px -1px rgba(0, 0, 0, 0.1)"
+      zIndex={10}
     >
-      {hasVoted ? "Update Vote" : "Submit Vote"}
-    </Button>
-    <Button
-      onClick={onNext}
-      isDisabled={!nextCategoryStatus && !!nextCategoryId}
-      rightIcon={<ChevronRightIcon />}
-      variant="outline"
-      size="sm"
-    >
-      {nextCategoryId ? "Next" : "Finish"}
-    </Button>
-  </Flex>
-);
-
-export default VotingFlow;
+      <Box style={{ color: "white" }}>Placeholder</Box>
+      <Button
+        onClick={onSubmit}
+        colorScheme="blue"
+        isDisabled={!selectedChoiceId || hasVoted}
+        size="sm"
+      >
+        Submit Vote
+      </Button>
+      <Button
+        onClick={onNext}
+        isDisabled={!nextCategoryStatus && !!nextCategoryId}
+        rightIcon={<ChevronRightIcon />}
+        variant="outline"
+        size="sm"
+      >
+        {nextCategoryId ? "Next" : "Finish"}
+      </Button>
+    </Flex>
+  );
+}

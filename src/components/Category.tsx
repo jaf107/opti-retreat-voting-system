@@ -1,4 +1,3 @@
-import React from "react";
 import {
   Box,
   Image,
@@ -17,14 +16,16 @@ const MotionBox = chakra(motion.div, {
 interface CategoryProps {
   choice: Choice;
   isSelected: boolean;
+  isDisabled: boolean;
   onSelect: (choiceId: string) => void;
 }
 
-const Category: React.FC<CategoryProps> = ({
+export default function Category({
   choice,
   isSelected,
+  isDisabled,
   onSelect,
-}) => {
+}: CategoryProps) {
   return (
     <MotionBox
       initial={{ opacity: 0, y: 50 }}
@@ -36,15 +37,16 @@ const Category: React.FC<CategoryProps> = ({
         borderWidth="1px"
         borderRadius="xl"
         overflow="hidden"
-        cursor="pointer"
-        onClick={() => onSelect(choice.id)}
+        cursor={isDisabled ? "not-allowed" : "pointer"}
+        onClick={() => !isDisabled && onSelect(choice.id)}
         bg={isSelected ? "blue.50" : "white"}
         boxShadow={isSelected ? "0 0 0 5px rgba(51, 204, 51, 0.8)" : "lg"}
         transition="all 0.3s"
-        _hover={{ transform: "translateY(-5px)" }}
+        _hover={{ transform: isDisabled ? "none" : "translateY(-5px)" }}
         height="100%"
         display="flex"
         flexDirection="column"
+        opacity={isDisabled && !isSelected ? 0.5 : 1}
       >
         <AspectRatio ratio={1} width="100%">
           <Image
@@ -63,6 +65,4 @@ const Category: React.FC<CategoryProps> = ({
       </Box>
     </MotionBox>
   );
-};
-
-export default Category;
+}

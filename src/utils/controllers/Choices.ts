@@ -5,7 +5,8 @@ export const fetchAllChoices = async (categoryId: string) => {
   const { data, error } = await supabase
     .from(CHOICES)
     .select("*")
-    .eq("category_id", categoryId);
+    .eq("category_id", categoryId)
+    .order("name", { ascending: true });
 
   return { data, error };
 };
@@ -14,7 +15,8 @@ export const fetchVotingChoices = async (categoryId: string) => {
     .from(CHOICES)
     .select("*")
     .eq("category_id", categoryId)
-    .eq("hidden", false);
+    .eq("hidden", false)
+    .order("name", { ascending: true });
 
   return { data, error };
 };

@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react";
 import { Category, CategoryWithChoices } from "../models/Category";
-import { fetchCategories, fetchChoicesWithVotes } from "../utils/supabaseApi";
+import {
+  fetchCategories,
+  fetchCategoryResults,
+} from "../utils/supabaseApi";
 import { ChoiceWithVotes } from "../models/Choice";
 import { useToast } from "@chakra-ui/react";
 
@@ -20,7 +23,7 @@ export const useCategories = () => {
       const categoriesWithChoices: CategoryWithChoices[] = await Promise.all(
         categoriesData.map(async (category: Category) => {
           const { data: choicesData, error: choicesError } =
-            await fetchChoicesWithVotes(category.id);
+            await fetchCategoryResults(category.id);
           if (choicesError) throw choicesError;
           if (!choicesData)
             throw new Error(
@@ -28,17 +31,19 @@ export const useCategories = () => {
             );
 
           const totalVotes = choicesData.reduce(
-            (sum: number, choice: ChoiceWithVotes) => sum + choice.vote_count,
+            (sum: number, choice: any) => sum + choice.vote_count,
             0
           );
 
-          const choicesWithPercentage = choicesData.map(
-            (choice: ChoiceWithVotes) => ({
-              ...choice,
-              votePercentage:
-                totalVotes > 0 ? (choice.vote_count / totalVotes) * 100 : 0,
-            })
-          );
+          const choicesWithPercentage = choicesData.map((choice: any) => ({
+            id: choice.option_id,
+            name: choice.option_name,
+            image_src: choice.image_src || "",
+            category_id: choice.category_id,
+            vote_count: choice.vote_count,
+            votePercentage:
+              totalVotes > 0 ? (choice.vote_count / totalVotes) * 100 : 0,
+          }));
 
           const sortedChoices = choicesWithPercentage.sort(
             (a: { vote_count: number }, b: { vote_count: number }) =>

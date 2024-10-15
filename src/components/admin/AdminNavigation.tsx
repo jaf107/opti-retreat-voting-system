@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 export const AdminNavigation: React.FC = () => (
   <Flex width="100%" mb={8} justifyContent="center">
     <Button as={Link} to="/admin" mr={4}>
-      Home
+      App
     </Button>
     <Button as={Link} to="/admin/categories" mr={4}>
       Categories

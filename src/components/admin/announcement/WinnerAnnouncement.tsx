@@ -28,7 +28,7 @@ export const WinnerAnnouncement: React.FC = () => {
       navigate(`/admin/announce/${categories[currentIndex + 1].id}`);
       setShowWinner(false);
     } else {
-      navigate("/admin/results");
+      navigate("/adios");
     }
   };
 

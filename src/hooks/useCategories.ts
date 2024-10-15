@@ -1,10 +1,6 @@
 import { useEffect, useState } from "react";
 import { Category, CategoryWithChoices } from "../models/Category";
-import {
-  fetchCategories,
-  fetchCategoryResults,
-} from "../utils/supabaseApi";
-import { ChoiceWithVotes } from "../models/Choice";
+import { fetchCategories, fetchCategoryResults } from "../utils/supabaseApi";
 import { useToast } from "@chakra-ui/react";
 
 export const useCategories = () => {
@@ -40,6 +36,7 @@ export const useCategories = () => {
             name: choice.option_name,
             image_src: choice.image_src || "",
             category_id: choice.category_id,
+            hidden: choice.hidden,
             vote_count: choice.vote_count,
             votePercentage:
               totalVotes > 0 ? (choice.vote_count / totalVotes) * 100 : 0,

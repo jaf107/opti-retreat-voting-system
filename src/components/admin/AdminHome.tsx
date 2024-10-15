@@ -1,14 +1,13 @@
-import { Button, SimpleGrid, Text } from "@chakra-ui/react";
-import { AdminCard } from "./AdminCard";
+import { Box, Button, Heading, Text, VStack } from "@chakra-ui/react";
 import { useAdminStatus } from "../../hooks/useAdminStatus";
-import { Link } from "react-router-dom";
 
 export const AdminHome: React.FC = () => {
   const { isVotingEnabled, toggleVoting } = useAdminStatus();
 
   return (
-    <SimpleGrid columns={{ base: 1 }} spacing={8} width="100%">
-      <AdminCard title="Voting Status">
+    <Box p={6} borderWidth={1} borderRadius="lg" shadow="md">
+      <VStack spacing={4} align="stretch">
+        <Heading size="md">Voting Status </Heading>
         <Text>Current status: {isVotingEnabled ? "Enabled" : "Disabled"}</Text>
         <Button
           colorScheme={isVotingEnabled ? "red" : "green"}
@@ -16,19 +15,7 @@ export const AdminHome: React.FC = () => {
         >
           {isVotingEnabled ? "Stop Voting" : "Start Voting"}
         </Button>
-      </AdminCard>
-
-      <AdminCard title="Category Management">
-        <Button as={Link} to="/admin/categories" colorScheme="blue">
-          Manage Categories
-        </Button>
-      </AdminCard>
-
-      <AdminCard title="Announcement">
-        <Button as={Link} to="/admin/announce" colorScheme="blue">
-          Start Announcements
-        </Button>
-      </AdminCard>
-    </SimpleGrid>
+      </VStack>
+    </Box>
   );
 };

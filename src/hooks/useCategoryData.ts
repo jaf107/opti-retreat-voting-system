@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import { Category } from "../models/Category";
 import { Choice } from "../models/Choice";
 import { useToast } from "@chakra-ui/react";
-import { fetchCategory, fetchChoices } from "../utils/supabaseApi";
+import { fetchCategory, fetchVotingChoices } from "../utils/supabaseApi";
 
 export const useCategoryData = (categoryId: string | undefined) => {
   const [category, setCategory] = useState<Category | null>(null);
@@ -31,7 +31,7 @@ export const useCategoryData = (categoryId: string | undefined) => {
   const loadChoices = useCallback(async () => {
     if (!categoryId) return;
 
-    const { data, error } = await fetchChoices(categoryId);
+    const { data, error } = await fetchVotingChoices(categoryId);
     if (error) {
       console.error("Error fetching choices:", error);
       toast({

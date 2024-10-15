@@ -52,7 +52,13 @@ export const WinnerAnnouncement: React.FC = () => {
         >
           <AnimatePresence mode="wait">
             {category.choices
-              .filter((choice) => !showWinner || choice.id !== winnerChoice?.id)
+              .filter(
+                (choice) =>
+                  !showWinner ||
+                  choice.id !== winnerChoice?.id ||
+                  !choice.hidden
+              )
+              .filter((choice) => choice.hidden !== true)
               .map((choice) => (
                 <ChoiceCard
                   key={choice.id}

@@ -14,6 +14,7 @@ import useSession from "./hooks/useSession";
 import Homepage from "./components/Homepage";
 import VotingFlow from "./components/VotingFlow";
 import AdminDashboard from "./components/admin/AdminDashboard";
+import VotingConclusion from "./components/VotingConclusion";
 
 export default function App() {
   const session = useSession();
@@ -52,6 +53,7 @@ export default function App() {
               <Routes>
                 <Route path="/" element={<Homepage />} />
                 <Route path="/vote/:categoryId" element={<VotingFlow />} />
+                <Route path="/vote/conclusion" element={<VotingConclusion />} />
                 <Route path="/admin/*" element={<AdminDashboard />} />
               </Routes>
             </Box>

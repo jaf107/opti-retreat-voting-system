@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Box, Heading, SimpleGrid, Container } from "@chakra-ui/react";
 import { AnimatePresence } from "framer-motion";
@@ -8,11 +8,13 @@ import { useAnnouncementState } from "../../../hooks/useAnnouncementState";
 import { ChoiceCard } from "./ChoiceCard";
 import { WinnerCard } from "./WinnerCard";
 import { AnnouncementControls } from "./AnnouncementControls";
+import { RevealAnimation } from "./RevealAnimation";
 
 export const WinnerAnnouncement: React.FC = () => {
   const { categoryId } = useParams<{ categoryId: string }>();
   const navigate = useNavigate();
   const { categories, isLoading } = useCategories();
+  const [isRevealing, setIsRevealing] = useState(false);
 
   const category = categories.find((c) => c.id === categoryId);
   const { showWinner, setShowWinner, winnerChoice } =
@@ -28,8 +30,17 @@ export const WinnerAnnouncement: React.FC = () => {
       navigate(`/admin/announce/${categories[currentIndex + 1].id}`);
       setShowWinner(false);
     } else {
-      navigate("/admin/results");
+      navigate("/adios");
     }
+  };
+
+  const handleShowWinner = () => {
+    setIsRevealing(true);
+  };
+
+  const handleRevealComplete = () => {
+    setIsRevealing(false);
+    setShowWinner(true);
   };
 
   const sortedChoices = [...category.choices].sort((a, b) => {
@@ -70,9 +81,14 @@ export const WinnerAnnouncement: React.FC = () => {
 
       <AnnouncementControls
         showWinner={showWinner}
-        onShowWinner={() => setShowWinner(true)}
+        onShowWinner={handleShowWinner}
         onNext={handleNext}
         isLastCategory={categories.indexOf(category) === categories.length - 1}
+      />
+
+      <RevealAnimation
+        isRevealing={isRevealing}
+        onRevealComplete={handleRevealComplete}
       />
     </Box>
   );

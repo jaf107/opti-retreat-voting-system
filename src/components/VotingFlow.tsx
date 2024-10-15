@@ -40,7 +40,7 @@ export default function VotingFlow() {
     if (nextCategoryId) {
       navigate(`/vote/${nextCategoryId}`);
     } else {
-      navigate("/");
+      navigate("/vote/conclusion");
     }
   };
 

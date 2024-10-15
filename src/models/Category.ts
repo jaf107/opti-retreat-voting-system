@@ -1,15 +1,11 @@
-import { ChoiceResult, ChoiceWithVotes } from "./Choice";
+import { ChoiceWithVotes } from "./Choice";
 
 export type Category = {
   id: string;
   name: string;
   status: boolean;
-};
-
-export type CategoryResult = {
-  category_id: string;
-  category_name: string;
-  options: ChoiceResult[];
+  order_index: number;
+  rigged: boolean;
 };
 
 export interface CategoryWithChoices extends Category {

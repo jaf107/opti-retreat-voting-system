@@ -12,10 +12,10 @@ import {
 import {
   fetchCategories,
   updateCategoryStatus,
-} from "../../utils/controllers/Categories";
-import { Category } from "../../models/Category";
+} from "../../../utils/controllers/Categories";
+import { Category } from "../../../models/Category";
 
-const CategoryManagement: React.FC = () => {
+const CategoryKillSwitchList: React.FC = () => {
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const toast = useToast();
@@ -120,4 +120,4 @@ const CategoryManagement: React.FC = () => {
   );
 };
 
-export default CategoryManagement;
+export default CategoryKillSwitchList;

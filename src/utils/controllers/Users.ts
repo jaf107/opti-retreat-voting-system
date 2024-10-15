@@ -7,9 +7,6 @@ export const registerUser = async (sessionId: string) => {
       session_id: sessionId,
     },
   ]);
-  if (error) {
-    console.error("Error registering user:", error);
-    return { error };
-  }
-  return { data };
+
+  return { data, error };
 };

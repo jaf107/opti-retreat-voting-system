@@ -1,80 +1,9 @@
 import React from "react";
-import {
-  Box,
-  Button,
-  Container,
-  Flex,
-  Heading,
-  SimpleGrid,
-  Spinner,
-  Text,
-  VStack,
-} from "@chakra-ui/react";
-import { Link, Route, Routes } from "react-router-dom";
-import { useAdminStatus } from "../../hooks/useAdminStatus";
-import CategoryManagement from "./CategoryManagement";
-import { CategoryAnnouncement } from "./CategoryAnnouncement";
+import { Button, Container, Flex, Heading } from "@chakra-ui/react";
 import { useAuth } from "../../hooks/useAuth";
 import { AuthModal } from "../AuthModal";
-import AnnouncementCategoriesList from "./AnnouncementCategoryList";
-
-interface AdminCardProps {
-  title: string;
-  children: React.ReactNode;
-}
-
-const AdminCard: React.FC<AdminCardProps> = ({ title, children }) => (
-  <Box p={6} borderWidth={1} borderRadius="lg" shadow="md">
-    <VStack spacing={4} align="stretch">
-      <Heading size="md">{title}</Heading>
-      {children}
-    </VStack>
-  </Box>
-);
-
-const AdminNavigation: React.FC = () => (
-  <Flex width="100%" mb={8} justifyContent="center">
-    <Button as={Link} to="/admin" mr={4}>
-      Home
-    </Button>
-    <Button as={Link} to="/admin/categories" mr={4}>
-      Categories
-    </Button>
-    <Button as={Link} to="/admin/announce">
-      Announcement
-    </Button>
-  </Flex>
-);
-
-const AdminHome: React.FC = () => {
-  const { isVotingEnabled, toggleVoting } = useAdminStatus();
-
-  return (
-    <SimpleGrid columns={{ base: 1 }} spacing={8} width="100%">
-      <AdminCard title="Voting Status">
-        <Text>Current status: {isVotingEnabled ? "Enabled" : "Disabled"}</Text>
-        <Button
-          colorScheme={isVotingEnabled ? "red" : "green"}
-          onClick={toggleVoting}
-        >
-          {isVotingEnabled ? "Stop Voting" : "Start Voting"}
-        </Button>
-      </AdminCard>
-
-      <AdminCard title="Category Management">
-        <Button as={Link} to="/admin/categories" colorScheme="blue">
-          Manage Categories
-        </Button>
-      </AdminCard>
-
-      <AdminCard title="Announcement">
-        <Button as={Link} to="/admin/announce" colorScheme="blue">
-          Start Announcements
-        </Button>
-      </AdminCard>
-    </SimpleGrid>
-  );
-};
+import { AdminNavigation } from "./AdminNavigation";
+import { AdminRoutes } from "./AdminRoutes";
 
 const AdminDashboard: React.FC = () => {
   const { isAuthenticated, isAuthModalOpen, authenticate, logout } = useAuth();
@@ -95,15 +24,7 @@ const AdminDashboard: React.FC = () => {
           </Button>
         </Flex>
         <AdminNavigation />
-        <Routes>
-          <Route path="/" element={<AdminHome />} />
-          <Route path="/categories" element={<CategoryManagement />} />
-          <Route path="/announce" element={<AnnouncementCategoriesList />} />
-          <Route
-            path="/announce/:categoryId"
-            element={<CategoryAnnouncement />}
-          />
-        </Routes>
+        <AdminRoutes />
       </Flex>
     </Container>
   );

@@ -34,13 +34,13 @@ export default function Category({
       width="100%"
     >
       <Box
-        borderWidth="1px"
+        borderWidth={isSelected ? "6px" : "1px"}
+        borderColor={isSelected ? "green.500" : "gray.200"}
         borderRadius="xl"
         overflow="hidden"
         cursor={isDisabled ? "not-allowed" : "pointer"}
         onClick={() => !isDisabled && onSelect(choice.id)}
         bg={isSelected ? "blue.50" : "white"}
-        boxShadow={isSelected ? "0 0 0 5px rgba(51, 204, 51, 0.8)" : "lg"}
         transition="all 0.3s"
         _hover={{ transform: isDisabled ? "none" : "translateY(-5px)" }}
         height="100%"

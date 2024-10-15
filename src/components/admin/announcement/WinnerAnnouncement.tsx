@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Box, Heading, SimpleGrid, Container } from "@chakra-ui/react";
 import { AnimatePresence } from "framer-motion";
@@ -8,11 +8,13 @@ import { useAnnouncementState } from "../../../hooks/useAnnouncementState";
 import { ChoiceCard } from "./ChoiceCard";
 import { WinnerCard } from "./WinnerCard";
 import { AnnouncementControls } from "./AnnouncementControls";
+import { RevealAnimation } from "./RevealAnimation";
 
 export const WinnerAnnouncement: React.FC = () => {
   const { categoryId } = useParams<{ categoryId: string }>();
   const navigate = useNavigate();
   const { categories, isLoading } = useCategories();
+  const [isRevealing, setIsRevealing] = useState(false);
 
   const category = categories.find((c) => c.id === categoryId);
   const { showWinner, setShowWinner, winnerChoice } =
@@ -30,6 +32,15 @@ export const WinnerAnnouncement: React.FC = () => {
     } else {
       navigate("/adios");
     }
+  };
+
+  const handleShowWinner = () => {
+    setIsRevealing(true);
+  };
+
+  const handleRevealComplete = () => {
+    setIsRevealing(false);
+    setShowWinner(true);
   };
 
   const sortedChoices = [...category.choices].sort((a, b) => {
@@ -55,21 +66,7 @@ export const WinnerAnnouncement: React.FC = () => {
           {showWinner && winnerChoice && <WinnerCard choice={winnerChoice} />}
         </AnimatePresence>
 
-        <SimpleGrid
-          columns={
-            !showWinner
-              ? {
-                  base: 2,
-                }
-              : {
-                  base: 2,
-                  lg: visibleChoices.length,
-                }
-          }
-          spacing={4}
-          px={4}
-          width="100%"
-        >
+        <SimpleGrid columns={2} spacing={4} px={4} width="100%">
           <AnimatePresence mode="wait">
             {visibleChoices.map((choice) => (
               <ChoiceCard
@@ -84,9 +81,14 @@ export const WinnerAnnouncement: React.FC = () => {
 
       <AnnouncementControls
         showWinner={showWinner}
-        onShowWinner={() => setShowWinner(true)}
+        onShowWinner={handleShowWinner}
         onNext={handleNext}
         isLastCategory={categories.indexOf(category) === categories.length - 1}
+      />
+
+      <RevealAnimation
+        isRevealing={isRevealing}
+        onRevealComplete={handleRevealComplete}
       />
     </Box>
   );

@@ -1,16 +1,16 @@
 import { Route, Routes } from "react-router-dom";
 import { AppKillSwitch } from "./AppKillSwitch";
-import CategoryKillSwitchList from "./CategoryKillSwitchList";
-import AnnouncementCategoriesList from "./AnnouncementCategoryList";
-import { CategoryAnnouncement } from "./CategoryAnnouncement";
+import CategoryKillSwitchList from "./category/CategoryKillSwitchList";
+import AnnouncementList from "./announcement/AnnouncementList";
+import { WinnerAnnouncement } from "./announcement/WinnerAnnouncement";
 
 export const AdminRoutes = () => {
   return (
     <Routes>
       <Route path="/" element={<AppKillSwitch />} />
       <Route path="/categories" element={<CategoryKillSwitchList />} />
-      <Route path="/announce" element={<AnnouncementCategoriesList />} />
-      <Route path="/announce/:categoryId" element={<CategoryAnnouncement />} />
+      <Route path="/announce" element={<AnnouncementList />} />
+      <Route path="/announce/:categoryId" element={<WinnerAnnouncement />} />
     </Routes>
   );
 };

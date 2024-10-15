@@ -1,9 +1,9 @@
 import { Box, Button, Heading, SimpleGrid } from "@chakra-ui/react";
-import { useCategories } from "../../hooks/useCategories";
-import { Category } from "../../models/Category";
+import { useCategories } from "../../../hooks/useCategories";
+import { Category } from "../../../models/Category";
 import { Link } from "react-router-dom";
 
-const AnnouncementCategoriesList: React.FC = () => {
+const AnnouncementList: React.FC = () => {
   const { categories, isLoading } = useCategories();
 
   if (isLoading) {
@@ -33,4 +33,4 @@ const AnnouncementCategoriesList: React.FC = () => {
   );
 };
 
-export default AnnouncementCategoriesList;
+export default AnnouncementList;

@@ -16,9 +16,9 @@ import {
 } from "@chakra-ui/react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronRightIcon } from "@chakra-ui/icons";
-import { useCategories } from "../../hooks/useCategories";
-import { useAnnouncementState } from "../../hooks/useAnnouncementState";
-import { ChoiceWithVotes } from "../../models/Choice";
+import { useCategories } from "../../../hooks/useCategories";
+import { useAnnouncementState } from "../../../hooks/useAnnouncementState";
+import { ChoiceWithVotes } from "../../../models/Choice";
 
 const MotionBox = motion(Box as any);
 
@@ -113,7 +113,7 @@ const WinnerCard: React.FC<WinnerCardProps> = ({ choice }) => (
   </MotionBox>
 );
 
-export const CategoryAnnouncement: React.FC = () => {
+export const WinnerAnnouncement: React.FC = () => {
   const { categoryId } = useParams<{ categoryId: string }>();
   const navigate = useNavigate();
   const { categories, isLoading } = useCategories();

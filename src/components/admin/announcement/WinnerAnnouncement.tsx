@@ -55,7 +55,21 @@ export const WinnerAnnouncement: React.FC = () => {
           {showWinner && winnerChoice && <WinnerCard choice={winnerChoice} />}
         </AnimatePresence>
 
-        <SimpleGrid columns={2} spacing={4} px={4} width="100%">
+        <SimpleGrid
+          columns={
+            !showWinner
+              ? {
+                  base: 2,
+                }
+              : {
+                  base: 2,
+                  lg: visibleChoices.length,
+                }
+          }
+          spacing={4}
+          px={4}
+          width="100%"
+        >
           <AnimatePresence mode="wait">
             {visibleChoices.map((choice) => (
               <ChoiceCard

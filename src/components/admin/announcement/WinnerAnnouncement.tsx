@@ -17,7 +17,6 @@ export const WinnerAnnouncement: React.FC = () => {
   const category = categories.find((c) => c.id === categoryId);
   const { showWinner, setShowWinner, winnerChoice } =
     useAnnouncementState(category);
-  const otherChoiceSize = category ? category.choices.length - 1 : 0;
 
   if (isLoading || !category) {
     return <Box>Loading...</Box>;
@@ -33,6 +32,18 @@ export const WinnerAnnouncement: React.FC = () => {
     }
   };
 
+  const sortedChoices = [...category.choices].sort((a, b) => {
+    if (showWinner) {
+      return b.vote_count - a.vote_count;
+    } else {
+      return a.name.localeCompare(b.name);
+    }
+  });
+
+  const visibleChoices = sortedChoices.filter((choice) =>
+    showWinner ? choice.id !== winnerChoice?.id : !choice.hidden
+  );
+
   return (
     <Box position="relative" minHeight="100vh" pb="120px">
       <Container maxW="xl" centerContent>
@@ -44,28 +55,15 @@ export const WinnerAnnouncement: React.FC = () => {
           {showWinner && winnerChoice && <WinnerCard choice={winnerChoice} />}
         </AnimatePresence>
 
-        <SimpleGrid
-          columns={showWinner ? (otherChoiceSize % 2 === 0 ? 2 : 3) : 2}
-          spacing={4}
-          px={4}
-          width="100%"
-        >
+        <SimpleGrid columns={2} spacing={4} px={4} width="100%">
           <AnimatePresence mode="wait">
-            {category.choices
-              .filter(
-                (choice) =>
-                  !showWinner ||
-                  choice.id !== winnerChoice?.id ||
-                  !choice.hidden
-              )
-              .filter((choice) => choice.hidden !== true)
-              .map((choice) => (
-                <ChoiceCard
-                  key={choice.id}
-                  choice={choice}
-                  showResults={showWinner}
-                />
-              ))}
+            {visibleChoices.map((choice) => (
+              <ChoiceCard
+                key={choice.id}
+                choice={choice}
+                showResults={showWinner}
+              />
+            ))}
           </AnimatePresence>
         </SimpleGrid>
       </Container>

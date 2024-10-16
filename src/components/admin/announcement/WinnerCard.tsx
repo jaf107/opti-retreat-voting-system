@@ -2,7 +2,6 @@ import {
   AspectRatio,
   Box,
   Heading,
-  HStack,
   Image,
   Progress,
   Text,
@@ -44,12 +43,9 @@ export const WinnerCard: React.FC<WinnerCardProps> = ({ choice }) => (
         <Text fontSize="xl" fontWeight="bold" textAlign="center">
           {choice.name}
         </Text>
-        <HStack justify="space-between">
-          <Text fontSize="lg">
-            {choice.votePercentage.toFixed(2)}% of votes
-          </Text>
-          <Text fontSize="lg">{choice.vote_count} votes</Text>
-        </HStack>
+        <Text fontSize="lg" textAlign={"center"}>
+          {choice.votePercentage.toFixed(2)}% of votes
+        </Text>
         <Progress value={choice.votePercentage} colorScheme="green" size="lg" />
       </VStack>
     </Box>

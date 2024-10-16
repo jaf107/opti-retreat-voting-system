@@ -1,6 +1,8 @@
+import React from "react";
 import {
   AspectRatio,
   Box,
+  Flex,
   Image,
   Progress,
   Text,
@@ -38,26 +40,36 @@ export const ChoiceCard: React.FC<ChoiceCardProps> = ({
       display="flex"
       flexDirection="column"
     >
-      <AspectRatio ratio={1} width="100%">
+      <AspectRatio ratio={4 / 3} width="100%">
         <Image src={choice.image_src} alt={choice.name} objectFit="cover" />
       </AspectRatio>
-      <VStack p={2} spacing={2} align="stretch">
-        <Text fontWeight="bold" fontSize="sm">
-          {choice.name}
-        </Text>
+
+      <Flex direction="column" flex={1} p={2}>
+        <Box
+          flex={1}
+          display="flex"
+          alignItems="center"
+          justifyContent="center"
+        >
+          <Text fontWeight="bold" fontSize="sm" textAlign="center">
+            {choice.name}
+          </Text>
+        </Box>
+
         {showResults && (
-          <>
-            <Text fontSize="xs" color="gray.600">
-              {choice.votePercentage.toFixed(2)}% ({choice.vote_count} votes)
+          <VStack spacing={1} mt="auto">
+            <Text fontSize="xs" textAlign="center">
+              {choice.votePercentage.toFixed(2)}% of votes
             </Text>
             <Progress
               value={choice.votePercentage}
-              size="sm"
               colorScheme="blue"
+              size="sm"
+              width="100%"
             />
-          </>
+          </VStack>
         )}
-      </VStack>
+      </Flex>
     </Box>
   </MotionBox>
 );

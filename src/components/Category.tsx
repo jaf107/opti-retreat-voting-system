@@ -46,7 +46,7 @@ export default function Category({
         height="100%"
         display="flex"
         flexDirection="column"
-        opacity={isDisabled && !isSelected ? 0.5 : 1}
+        opacity={isDisabled && !isSelected ? 0.8 : 1}
       >
         <AspectRatio ratio={1} width="100%">
           <Image

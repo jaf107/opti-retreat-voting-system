@@ -11,6 +11,10 @@ import {
   Text,
   Flex,
   VStack,
+  Image,
+  AspectRatio,
+  Container,
+  useBreakpointValue,
 } from "@chakra-ui/react";
 import { getAppStatus } from "../utils/controllers/AppStatus";
 import { fetchFirstCategory } from "../utils/controllers/Categories";
@@ -22,6 +26,10 @@ const Homepage: React.FC = () => {
   const [firstCategoryStatus, setFirstCategoryStatus] =
     useState<boolean>(false);
   const navigate = useNavigate();
+
+  const buttonSize = useBreakpointValue({ base: "md", md: "lg" });
+  const headingSize = useBreakpointValue({ base: "xl", md: "2xl" });
+  const textSize = useBreakpointValue({ base: "md", md: "lg" });
 
   useEffect(() => {
     loadAppStatus();
@@ -63,42 +71,72 @@ const Homepage: React.FC = () => {
     }
   };
 
-  if (appStatus === null) {
-    return (
-      <Box
-        height="100vh"
-        display="flex"
-        alignItems="center"
-        justifyContent="center"
-      >
-        <Spinner
-          thickness="4px"
-          speed="0.65s"
-          emptyColor="gray.200"
-          color="blue.500"
-          size="xl"
-        />
-      </Box>
-    );
-  }
+  const SunsetImage = () => (
+    <AspectRatio ratio={1} width="100%" maxWidth="650px" margin="auto">
+      <Image src="/sunset_shadow.png" objectFit="cover" />
+    </AspectRatio>
+  );
 
-  if (!appStatus) {
+  const Content = () => {
+    if (appStatus === null) {
+      return (
+        <Flex direction="column" align="center" justify="center" height="100vh">
+          <SunsetImage />
+          <Spinner
+            thickness="4px"
+            speed="0.65s"
+            emptyColor="gray.200"
+            color="blue.500"
+            size="xl"
+            mt={4}
+          />
+        </Flex>
+      );
+    }
+
+    if (!appStatus) {
+      return (
+        <VStack spacing={4} align="center">
+          <SunsetImage />
+          <Card width="auto">
+            <CardHeader>Voting is currently closed</CardHeader>
+            <CardBody>
+              <Text>Please check back later when voting is enabled.</Text>
+            </CardBody>
+          </Card>
+        </VStack>
+      );
+    }
+
     return (
-      <Box
-        height="100vh"
-        display="flex"
-        alignItems="center"
-        justifyContent="center"
-      >
-        <Card width="350px">
-          <CardHeader>Voting is currently closed</CardHeader>
-          <CardBody>
-            <Text>Please check back later when voting is enabled.</Text>
-          </CardBody>
-        </Card>
-      </Box>
+      <Container maxW="container.md" py={[8, 12, 16]}>
+        <VStack spacing={[6, 8, 10]} align="center">
+          <SunsetImage />
+          <Box textAlign="center">
+            <Heading as="h2" size={headingSize} mb={4}>
+              Welcome to the UnOptimized Awards 2024!
+            </Heading>
+          </Box>
+          <Button
+            onClick={handleStart}
+            colorScheme="orange"
+            borderRadius="full"
+            leftIcon={<FaAward />}
+            isDisabled={!firstCategoryStatus}
+            fontSize={["lg", "xl"]}
+            size={buttonSize}
+            w="full"
+            h={["14", "16", "20"]}
+          >
+            Start Voting
+          </Button>
+          <Text textAlign="center" fontSize={textSize}>
+            Click the button above to start voting.
+          </Text>
+        </VStack>
+      </Container>
     );
-  }
+  };
 
   return (
     <Box
@@ -106,36 +144,12 @@ const Homepage: React.FC = () => {
       borderRadius="lg"
       boxShadow="md"
       bg="gray.50"
-      alignItems="center"
+      minHeight="100vh"
+      display="flex"
+      alignItems="start"
       justifyContent="center"
     >
-      <VStack alignItems={"center"} spacing={8}>
-        <Flex as="h1" mb={6} alignItems="center" justifyContent="center">
-          <Box py={12} textAlign="center">
-            <Flex alignItems="center" justifyContent="center" gap={2}>
-              <FaAward size={32} className="mr-2" />
-              <Heading as="h2" size="2xl">
-                Categories
-              </Heading>
-            </Flex>
-            <Text m={4} fontSize="xl">
-              Welcome to the UnOptimized Awards 2024!
-            </Text>
-          </Box>
-        </Flex>
-        <Button
-          onClick={handleStart}
-          colorScheme="blue"
-          size="lg"
-          leftIcon={<FaAward />}
-          isDisabled={!firstCategoryStatus}
-        >
-          Start Voting
-        </Button>
-        <Text textAlign={"center"}>
-          Click the button above to start voting.
-        </Text>
-      </VStack>
+      <Content />
     </Box>
   );
 };

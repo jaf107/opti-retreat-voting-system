@@ -9,12 +9,14 @@ import { ChoiceCard } from "./ChoiceCard";
 import { WinnerCard } from "./WinnerCard";
 import { AnnouncementControls } from "./AnnouncementControls";
 import { RevealAnimation } from "./RevealAnimation";
+import Fireworks from "@fireworks-js/react";
 
 export const WinnerAnnouncement: React.FC = () => {
   const { categoryId } = useParams<{ categoryId: string }>();
   const navigate = useNavigate();
   const { categories, isLoading } = useCategories();
   const [isRevealing, setIsRevealing] = useState(false);
+  const [showFireworks, setShowFireworks] = useState(false);
 
   const category = categories.find((c) => c.id === categoryId);
   const { showWinner, setShowWinner, winnerChoice } =
@@ -25,6 +27,7 @@ export const WinnerAnnouncement: React.FC = () => {
   }
 
   const handleNext = () => {
+    setShowFireworks(false);
     const currentIndex = categories.findIndex((c) => c.id === categoryId);
     if (currentIndex < categories.length - 1) {
       navigate(`/admin/announce/${categories[currentIndex + 1].id}`);
@@ -41,6 +44,7 @@ export const WinnerAnnouncement: React.FC = () => {
   const handleRevealComplete = () => {
     setIsRevealing(false);
     setShowWinner(true);
+    setShowFireworks(true);
   };
 
   const sortedChoices = [...category.choices].sort((a, b) => {
@@ -56,46 +60,79 @@ export const WinnerAnnouncement: React.FC = () => {
   );
 
   return (
-    <Box position="relative" minHeight="100vh" pb="120px">
-      <Container maxW="xl" centerContent>
-        <Heading as="h2" size="xl" mb={8} textAlign="center">
-          {category.name}
-        </Heading>
-
-        <AnimatePresence mode="wait">
-          {showWinner && winnerChoice && <WinnerCard choice={winnerChoice} />}
-        </AnimatePresence>
-
-        <SimpleGrid
-          columns={!showWinner ? 2 : { base: visibleChoices.length }}
-          spacing={4}
-          px={4}
+    <>
+      {showFireworks && (
+        <Box
+          position="absolute"
+          top={0}
+          left={0}
           width="100%"
+          height="100vh"
+          zIndex={0}
         >
+          <Fireworks
+            options={{
+              rocketsPoint: {
+                min: 50,
+                max: 100,
+              },
+              intensity: 50,
+              explosion: 5,
+            }}
+            style={{
+              width: "100%",
+              height: "100%",
+              position: "absolute",
+              top: 0,
+              left: 0,
+            }}
+          />
+        </Box>
+      )}
+
+      <Box position="relative" minHeight="100vh" pb="120px" zIndex={1}>
+        <Container maxW="xl" centerContent>
+          <Heading as="h2" size="xl" mb={8} textAlign="center">
+            {category.name}
+          </Heading>
+
           <AnimatePresence mode="wait">
-            {visibleChoices.map((choice) => (
-              <ChoiceCard
-                key={choice.id}
-                choice={choice}
-                showResults={showWinner}
-              />
-            ))}
+            {showWinner && winnerChoice && <WinnerCard choice={winnerChoice} />}
           </AnimatePresence>
-        </SimpleGrid>
-      </Container>
 
-      <AnnouncementControls
-        showWinner={showWinner}
-        onShowWinner={handleShowWinner}
-        onNext={handleNext}
-        isLastCategory={categories.indexOf(category) === categories.length - 1}
-      />
+          <SimpleGrid
+            columns={!showWinner ? 2 : { base: visibleChoices.length }}
+            spacing={4}
+            px={4}
+            width="100%"
+          >
+            <AnimatePresence mode="wait">
+              {visibleChoices.map((choice) => (
+                <ChoiceCard
+                  key={choice.id}
+                  choice={choice}
+                  showResults={showWinner}
+                />
+              ))}
+            </AnimatePresence>
+          </SimpleGrid>
+        </Container>
 
-      <RevealAnimation
-        isRevealing={isRevealing}
-        onRevealComplete={handleRevealComplete}
-        categoryId={categoryId ?? ""}
-      />
-    </Box>
+        <AnnouncementControls
+          showWinner={showWinner}
+          onShowWinner={handleShowWinner}
+          onNext={handleNext}
+          isLastCategory={
+            categories.indexOf(category) === categories.length - 1
+          }
+        />
+
+        <RevealAnimation
+          isRevealing={isRevealing}
+          onRevealComplete={handleRevealComplete}
+          categoryId={categoryId ?? ""}
+        />
+      </Box>
+    </>
   );
 };

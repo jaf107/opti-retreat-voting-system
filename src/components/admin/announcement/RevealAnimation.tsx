@@ -1,27 +1,42 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Box } from "@chakra-ui/react";
 import { motion, AnimatePresence } from "framer-motion";
 
 interface RevealAnimationProps {
   isRevealing: boolean;
   onRevealComplete: () => void;
+  categoryId: string;
 }
 
 const MotionBox = motion(Box as any);
 
+const gifs = [
+  "https://y.yarn.co/080d55fe-0992-4137-81be-2ff44858fa48_text.gif",
+  "https://media1.tenor.com/m/fdRr2I1IwF8AAAAC/and-the-winner-is-benedict-townsend.gif",
+  "https://media1.tenor.com/m/kbLnwaNWXcsAAAAC/drum-roll-please-miranda-payne.gif",
+  "https://media1.tenor.com/m/kiq_TodItEYAAAAC/drumroll-exciting.gif",
+  "https://media1.tenor.com/m/izMMHOSq_w4AAAAd/winner-hereyougo.gif",
+];
+
 export const RevealAnimation: React.FC<RevealAnimationProps> = ({
   isRevealing,
   onRevealComplete,
+  categoryId,
 }) => {
+  const [currentGif, setCurrentGif] = useState("");
+
   useEffect(() => {
     if (isRevealing) {
+      const gifIndex = parseInt(categoryId, 36) % gifs.length;
+      setCurrentGif(gifs[gifIndex]);
+
       const timer = setTimeout(() => {
         onRevealComplete();
-      }, 3000);
+      }, 2000);
 
       return () => clearTimeout(timer);
     }
-  }, [isRevealing, onRevealComplete]);
+  }, [isRevealing, onRevealComplete, categoryId]);
 
   return (
     <AnimatePresence>
@@ -43,10 +58,12 @@ export const RevealAnimation: React.FC<RevealAnimationProps> = ({
         >
           <Box
             as="img"
-            src="https://y.yarn.co/080d55fe-0992-4137-81be-2ff44858fa48_text.gif"
+            src={currentGif}
             alt="Revealing winner"
-            maxWidth="100%"
-            maxHeight="100%"
+            // width="100%"
+            height="100%"
+            objectFit="contain"
+            objectPosition="center"
           />
         </MotionBox>
       )}

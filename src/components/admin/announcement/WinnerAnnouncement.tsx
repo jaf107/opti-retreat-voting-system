@@ -94,6 +94,7 @@ export const WinnerAnnouncement: React.FC = () => {
       <RevealAnimation
         isRevealing={isRevealing}
         onRevealComplete={handleRevealComplete}
+        categoryId={categoryId ?? ""}
       />
     </Box>
   );

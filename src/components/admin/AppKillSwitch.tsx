@@ -7,6 +7,7 @@ export const AppKillSwitch: React.FC = () => {
   return (
     <Flex
       p={8}
+      bg={"white"}
       borderRadius="lg"
       shadow="lg"
       gap={"30px"}

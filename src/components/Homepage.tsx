@@ -72,7 +72,7 @@ const Homepage: React.FC = () => {
   };
 
   const SunsetImage = () => (
-    <AspectRatio ratio={1} width="100%" maxWidth="650px" margin="auto">
+    <AspectRatio ratio={1} width="100%" maxWidth="450px" margin="auto">
       <Image src="/sunset_shadow.png" objectFit="cover" />
     </AspectRatio>
   );

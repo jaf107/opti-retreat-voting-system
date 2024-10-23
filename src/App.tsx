@@ -45,7 +45,7 @@ const AppContent = () => {
   }, [location.pathname, setBackgroundType]);
 
   return (
-    <Flex height={"100vh"} flexDirection="column">
+    <Flex minHeight={"100vh"} flexDirection="column">
       <Box
         position="fixed"
         top={0}

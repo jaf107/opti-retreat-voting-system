@@ -9,7 +9,7 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import { motion } from "framer-motion";
-import { ChoiceWithVotes } from "../../../models/Choice";
+import { ChoiceWithVotes } from "../models/Choice";
 
 interface ChoiceCardProps {
   choice: ChoiceWithVotes;

@@ -5,10 +5,10 @@ import { AnimatePresence } from "framer-motion";
 import { useCategories } from "../hooks/useCategories";
 import { useAnnouncementState } from "../hooks/useAnnouncementState";
 
-import { ChoiceCard } from "./admin/announcement/ChoiceCard";
-import { WinnerCard } from "./admin/announcement/WinnerCard";
+import { ChoiceCard } from "./ChoiceCard";
+import { WinnerCard } from "./WinnerCard";
 import { AnnouncementControls } from "./admin/announcement/AnnouncementControls";
-import { RevealAnimation } from "./admin/announcement/RevealAnimation";
+import { RevealAnimation } from "./RevealAnimation";
 import Fireworks from "@fireworks-js/react";
 
 export const WinnerAnnouncement: React.FC = () => {
@@ -90,9 +90,9 @@ export const WinnerAnnouncement: React.FC = () => {
         </Box>
       )}
 
-      <Box position="relative" minHeight="100vh" pb="40px" zIndex={1}>
+      <Box position="relative" minHeight="100vh" zIndex={1}>
         <Container maxW="full" centerContent>
-          <Heading as="h1" size="xl" mb={8} textAlign="center">
+          <Heading as="h1" size="xl" textAlign="center">
             {category.name}
           </Heading>
 
@@ -104,7 +104,7 @@ export const WinnerAnnouncement: React.FC = () => {
           >
             <AnimatePresence mode="wait">
               {showWinner && winnerChoice && (
-                <Box width={"500px"}>
+                <Box width={"400px"}>
                   <WinnerCard choice={winnerChoice} />
                 </Box>
               )}

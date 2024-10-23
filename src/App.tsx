@@ -82,7 +82,7 @@ const AppContent = () => {
         </Flex>
         <Flex justifyContent="flex-end">
           <Link to="/admin">
-            <Button variant={"subtle"} leftIcon={<CiSettings />} mr={4} />
+            <Button variant={"subtle"} leftIcon={<CiSettings />} />
           </Link>
         </Flex>
       </Flex>

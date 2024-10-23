@@ -90,8 +90,8 @@ export const WinnerAnnouncement: React.FC = () => {
         </Box>
       )}
 
-      <Box position="relative" minHeight="100vh" pb="120px" zIndex={1}>
-        <Container maxW="xl" centerContent>
+      <Box position="relative" minHeight="100vh" pb="40px" zIndex={1}>
+        <Container maxW="full" centerContent>
           <Heading as="h2" size="xl" mb={8} textAlign="center">
             {category.name}
           </Heading>
@@ -101,7 +101,11 @@ export const WinnerAnnouncement: React.FC = () => {
           </AnimatePresence>
 
           <SimpleGrid
-            columns={!showWinner ? 2 : { base: visibleChoices.length }}
+            columns={
+              !showWinner
+                ? visibleChoices.length
+                : { base: visibleChoices.length }
+            }
             spacing={4}
             px={4}
             width="100%"

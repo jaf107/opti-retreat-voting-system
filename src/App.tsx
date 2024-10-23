@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import {
   BrowserRouter as Router,
   Route,
@@ -12,7 +12,7 @@ import {
   Flex,
   Image,
   Heading,
-  Text,
+  Button,
 } from "@chakra-ui/react";
 import { SessionProvider } from "./contexts/SessionContext";
 import {
@@ -20,6 +20,7 @@ import {
   useBackground,
 } from "./contexts/BackgroundContext";
 import useSession from "./hooks/useSession";
+import { CiSettings } from "react-icons/ci";
 
 import Homepage from "./components/Homepage";
 import VotingFlow from "./components/VotingFlow";
@@ -80,13 +81,8 @@ const AppContent = () => {
           </Heading>
         </Flex>
         <Flex justifyContent="flex-end">
-          <Link
-            to="/admin"
-            style={{
-              cursor: "default",
-            }}
-          >
-            <Text color="white">A</Text>
+          <Link to="/admin">
+            <Button variant={"subtle"} leftIcon={<CiSettings />} mr={4} />
           </Link>
         </Flex>
       </Flex>

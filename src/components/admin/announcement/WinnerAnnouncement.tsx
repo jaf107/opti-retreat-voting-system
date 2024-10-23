@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { Box, Heading, SimpleGrid, Container } from "@chakra-ui/react";
+import { Box, Heading, SimpleGrid, Container, Flex } from "@chakra-ui/react";
 import { AnimatePresence } from "framer-motion";
 import { useCategories } from "../../../hooks/useCategories";
 import { useAnnouncementState } from "../../../hooks/useAnnouncementState";
@@ -92,34 +92,36 @@ export const WinnerAnnouncement: React.FC = () => {
 
       <Box position="relative" minHeight="100vh" pb="40px" zIndex={1}>
         <Container maxW="full" centerContent>
-          <Heading as="h2" size="xl" mb={8} textAlign="center">
+          <Heading as="h1" size="xl" mt={8} textAlign="center">
             {category.name}
           </Heading>
 
-          <AnimatePresence mode="wait">
-            {showWinner && winnerChoice && <WinnerCard choice={winnerChoice} />}
-          </AnimatePresence>
-
-          <SimpleGrid
-            columns={
-              !showWinner
-                ? visibleChoices.length
-                : { base: visibleChoices.length }
-            }
-            spacing={4}
-            px={4}
-            width="100%"
+          <Flex
+            height={"85vh"}
+            alignItems={"center"}
+            justifyContent={"center"}
+            flexDirection={"column"}
           >
             <AnimatePresence mode="wait">
-              {visibleChoices.map((choice) => (
-                <ChoiceCard
-                  key={choice.id}
-                  choice={choice}
-                  showResults={showWinner}
-                />
-              ))}
+              {showWinner && winnerChoice && (
+                <Box width={"500px"}>
+                  <WinnerCard choice={winnerChoice} />
+                </Box>
+              )}
             </AnimatePresence>
-          </SimpleGrid>
+
+            <Flex gap={10} px={4} width="100%" alignItems={"center"}>
+              <AnimatePresence mode="wait">
+                {visibleChoices.map((choice) => (
+                  <ChoiceCard
+                    key={choice.id}
+                    choice={choice}
+                    showResults={showWinner}
+                  />
+                ))}
+              </AnimatePresence>
+            </Flex>
+          </Flex>
         </Container>
 
         <AnnouncementControls

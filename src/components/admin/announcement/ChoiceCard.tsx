@@ -29,6 +29,8 @@ export const ChoiceCard: React.FC<ChoiceCardProps> = ({
     width="100%"
   >
     <Box
+      width={showResults ? "240px" : "400px"}
+      height={showResults ? "300px" : "450px"}
       borderWidth="1px"
       borderRadius="xl"
       overflow="hidden"
@@ -36,12 +38,17 @@ export const ChoiceCard: React.FC<ChoiceCardProps> = ({
       boxShadow="md"
       transition="all 0.3s"
       _hover={{ transform: "translateY(-5px)" }}
-      height="100%"
       display="flex"
       flexDirection="column"
+      p={1}
     >
-      <AspectRatio ratio={4 / 3} width="100%">
-        <Image src={choice.image_src} alt={choice.name} objectFit="cover" />
+      <AspectRatio ratio={1} width="100%">
+        <Image
+          src={choice.image_src}
+          alt={choice.name}
+          objectFit="cover"
+          borderRadius={"lg"}
+        />
       </AspectRatio>
 
       <Flex direction="column" flex={1} p={2}>

@@ -92,7 +92,7 @@ export const WinnerAnnouncement: React.FC = () => {
 
       <Box position="relative" minHeight="100vh" pb="40px" zIndex={1}>
         <Container maxW="full" centerContent>
-          <Heading as="h1" size="xl" mt={8} textAlign="center">
+          <Heading as="h1" size="xl" mb={8} textAlign="center">
             {category.name}
           </Heading>
 

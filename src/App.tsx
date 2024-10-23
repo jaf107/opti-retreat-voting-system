@@ -77,7 +77,7 @@ const AppContent = () => {
               mr={4}
             />
           </Link>
-          <Heading as="h2" size="md" fontWeight="bold">
+          <Heading as="h2" size="sm" fontWeight="bold">
             UnOptimized Awards 2024
           </Heading>
         </Flex>

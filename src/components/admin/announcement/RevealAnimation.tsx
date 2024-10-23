@@ -11,11 +11,11 @@ interface RevealAnimationProps {
 const MotionBox = motion(Box as any);
 
 const gifs = [
-  "https://y.yarn.co/080d55fe-0992-4137-81be-2ff44858fa48_text.gif",
-  "https://media1.tenor.com/m/fdRr2I1IwF8AAAAC/and-the-winner-is-benedict-townsend.gif",
-  "https://media1.tenor.com/m/kbLnwaNWXcsAAAAC/drum-roll-please-miranda-payne.gif",
-  "https://media1.tenor.com/m/kiq_TodItEYAAAAC/drumroll-exciting.gif",
-  "https://media1.tenor.com/m/izMMHOSq_w4AAAAd/winner-hereyougo.gif",
+  "/gifs/gif_1.gif",
+  "/gifs/gif_2.gif",
+  "/gifs/gif_3.gif",
+  "/gifs/gif_4.gif",
+  "/gifs/gif_5.gif",
 ];
 
 export const RevealAnimation: React.FC<RevealAnimationProps> = ({

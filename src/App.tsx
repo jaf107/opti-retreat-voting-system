@@ -27,6 +27,7 @@ import VotingFlow from "./components/VotingFlow";
 import AdminDashboard from "./components/admin/AdminDashboard";
 import VotingConclusion from "./components/VotingConclusion";
 import AnnouncementConclusion from "./components/admin/announcement/AnnouncementConclusion";
+import { WinnerAnnouncement } from "./components/WinnerAnnouncement";
 
 const AppContent = () => {
   const { currentBackground, setBackgroundType } = useBackground();
@@ -102,6 +103,10 @@ const AppContent = () => {
           <Route path="/vote/conclusion" element={<VotingConclusion />} />
           <Route path="/adios" element={<AnnouncementConclusion />} />
           <Route path="/admin/*" element={<AdminDashboard />} />
+          <Route
+            path="/announce/:categoryId"
+            element={<WinnerAnnouncement />}
+          />
         </Routes>
       </Box>
     </Flex>

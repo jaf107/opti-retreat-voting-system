@@ -19,7 +19,7 @@ const AnnouncementList: React.FC = () => {
         <Button
           key={category.id}
           as={Link}
-          to={`/admin/announce/${category.id}`}
+          to={`/announce/${category.id}`}
           size="lg"
           variant="outline"
           justifyContent="flex-start"

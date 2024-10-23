@@ -2,13 +2,13 @@ import React, { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Box, Heading, SimpleGrid, Container, Flex } from "@chakra-ui/react";
 import { AnimatePresence } from "framer-motion";
-import { useCategories } from "../../../hooks/useCategories";
-import { useAnnouncementState } from "../../../hooks/useAnnouncementState";
+import { useCategories } from "../hooks/useCategories";
+import { useAnnouncementState } from "../hooks/useAnnouncementState";
 
-import { ChoiceCard } from "./ChoiceCard";
-import { WinnerCard } from "./WinnerCard";
-import { AnnouncementControls } from "./AnnouncementControls";
-import { RevealAnimation } from "./RevealAnimation";
+import { ChoiceCard } from "./admin/announcement/ChoiceCard";
+import { WinnerCard } from "./admin/announcement/WinnerCard";
+import { AnnouncementControls } from "./admin/announcement/AnnouncementControls";
+import { RevealAnimation } from "./admin/announcement/RevealAnimation";
 import Fireworks from "@fireworks-js/react";
 
 export const WinnerAnnouncement: React.FC = () => {
@@ -30,7 +30,7 @@ export const WinnerAnnouncement: React.FC = () => {
     setShowFireworks(false);
     const currentIndex = categories.findIndex((c) => c.id === categoryId);
     if (currentIndex < categories.length - 1) {
-      navigate(`/admin/announce/${categories[currentIndex + 1].id}`);
+      navigate(`/announce/${categories[currentIndex + 1].id}`);
       setShowWinner(false);
     } else {
       navigate("/adios");

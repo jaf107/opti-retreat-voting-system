@@ -19,19 +19,19 @@ export default function AnnouncementConclusion() {
             Thank You for Joining Us
           </Heading>
           <Text fontSize="lg" mb={6}>
-            Thank you all for being part of the Optimizely Retreat 2024! As we
-            wrap up this incredible experience, we hope you’ve had the chance to
-            connect with colleagues, recharge, and gain new inspiration for the
-            exciting work ahead. Your enthusiasm and participation are what made
-            this retreat truly special, and we couldn’t be more grateful to have
-            such a dedicated and vibrant team. Let’s take the energy and
-            camaraderie from this event back with us, and continue building on
-            the collaboration and innovation that make Optimizely thrive. Safe
-            travels home, and here’s to an amazing year ahead!
+            Thank you all for being part of the Optimizely Retreat 2024! We hope
+            you had the chance to connect with colleagues, recharge, and gain
+            new inspiration for the exciting work ahead. Safe travels home, and
+            here’s to an amazing year ahead!
           </Text>
           <Text fontSize="xl" fontWeight="bold">
-            We look forward to seeing the amazing things you'll accomplish in
-            the coming year. Until next time!
+            Until next time!
+          </Text>
+          <Text fontSize="xl" fontWeight="bold">
+            Meet the team: Sabbir Bhai, Jafar, Toha
+          </Text>
+          <Text fontSize="sm" fontWeight="bold">
+            Don't forget to send Bonusly points!☀️🥲
           </Text>
         </VStack>
       </MotionBox>

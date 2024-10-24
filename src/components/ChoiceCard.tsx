@@ -29,8 +29,16 @@ export const ChoiceCard: React.FC<ChoiceCardProps> = ({
     width="100%"
   >
     <Box
-      width={showResults ? "240px" : "400px"}
-      height={showResults ? "300px" : "450px"}
+      width={{
+        base: "200px",
+        md: "270px",
+        lg: showResults ? "240px" : "400px",
+      }}
+      height={{
+        base: "250px",
+        md: "300px",
+        lg: showResults ? "300px" : "450px",
+      }}
       borderWidth="1px"
       borderRadius="xl"
       overflow="hidden"
@@ -41,13 +49,14 @@ export const ChoiceCard: React.FC<ChoiceCardProps> = ({
       display="flex"
       flexDirection="column"
       p={1}
+      mx="auto"
     >
       <AspectRatio ratio={1} width="100%">
         <Image
           src={choice.image_src}
           alt={choice.name}
           objectFit="cover"
-          borderRadius={"lg"}
+          borderRadius="lg"
         />
       </AspectRatio>
 
@@ -58,14 +67,18 @@ export const ChoiceCard: React.FC<ChoiceCardProps> = ({
           alignItems="center"
           justifyContent="center"
         >
-          <Text fontWeight="bold" fontSize="sm" textAlign="center">
+          <Text
+            fontWeight="bold"
+            fontSize={{ base: "xs", sm: "sm" }}
+            textAlign="center"
+          >
             {choice.name}
           </Text>
         </Box>
 
         {showResults && (
           <VStack spacing={1} mt="auto">
-            <Text fontSize="xs" textAlign="center">
+            <Text fontSize={{ base: "2xs", sm: "xs" }} textAlign="center">
               {choice.votePercentage.toFixed(2)}% of votes
             </Text>
             <Progress
